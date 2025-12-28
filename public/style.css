@@ -741,15 +741,12 @@ button {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 1px;
-  max-width: 100%;
-  height: auto;
 }
 
-.brand-logo.brand-casio,
-.brand-logo.brand-zara,
-.brand-logo.brand-hm,
-.brand-logo.brand-primark {
-  width: 72px;
+.brand-logo.brand-casio {
+  color: #1f5aa6;
+  font-weight: 800;
+  letter-spacing: 1.4px;
 }
 
 .brand-logo.brand-invicta {
@@ -762,7 +759,7 @@ button {
   height: auto;
 }
 
-.tile.edge-bottom .brand-logo {
+.tile.edge-bottom .brand-logo.brand-invicta {
   transform: rotate(90deg);
   transform-origin: center;
 }
