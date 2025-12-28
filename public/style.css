@@ -732,7 +732,7 @@ button {
 }
 
 .tile.edge-bottom.brand-tile.color-green::after {
-  bottom: -11px;
+  bottom: -16px;
 }
 
 .brand-logo {
