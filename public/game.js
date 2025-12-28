@@ -194,6 +194,14 @@ const updateProfile = () => {
   }
 };
 
+const BRAND_LOGOS = {
+  invicta: { src: 'invicta-logo.png', alt: 'INVECTA' },
+  casio: { src: 'casio-logo.png', alt: 'CASIO' },
+  zara: { src: 'zara-logo.png', alt: 'ZARA' },
+  hm: { src: 'logo-hm.png', alt: 'H&M' },
+  primark: { src: 'primark-logo.png', alt: 'PRIMARK' },
+};
+
 const prepareBoardTiles = () => {
   if (!boardTiles.length) {
     return;
@@ -203,10 +211,10 @@ const prepareBoardTiles = () => {
     const brand = tile.dataset.brand;
     if (brand) {
       const brandText = tile.dataset.brandText || label;
-      const brandLogoMarkup =
-        brand === 'invicta'
-          ? '<img class="brand-logo brand-invicta" src="invicta-logo.png" alt="">'
-          : `<span class="brand-logo brand-${brand}">${brandText}</span>`;
+      const brandLogo = BRAND_LOGOS[brand];
+      const brandLogoMarkup = brandLogo
+        ? `<img class="brand-logo brand-${brand}" src="${brandLogo.src}" alt="${brandLogo.alt}">`
+        : `<span class="brand-logo brand-${brand}">${brandText}</span>`;
       tile.innerHTML = `<span class="tile-label tile-label--brand">${brandLogoMarkup}</span><div class="tile-tokens"></div>`;
       return;
     }
