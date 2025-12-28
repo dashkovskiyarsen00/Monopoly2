@@ -203,22 +203,10 @@ const prepareBoardTiles = () => {
     const brand = tile.dataset.brand;
     if (brand) {
       const brandText = tile.dataset.brandText || label;
-      const brandLogoMarkup = (() => {
-        switch (brand) {
-          case 'invicta':
-            return '<img class="brand-logo brand-invicta" src="invicta-logo.png" alt="">';
-          case 'casio':
-            return '<img class="brand-logo brand-casio" src="casio-logo.svg" alt="">';
-          case 'zara':
-            return '<img class="brand-logo brand-zara" src="zara-logo.svg" alt="">';
-          case 'hm':
-            return '<img class="brand-logo brand-hm" src="hm-logo.svg" alt="">';
-          case 'primark':
-            return '<img class="brand-logo brand-primark" src="primark-logo.svg" alt="">';
-          default:
-            return `<span class="brand-logo brand-${brand}">${brandText}</span>`;
-        }
-      })();
+      const brandLogoMarkup =
+        brand === 'invicta'
+          ? '<img class="brand-logo brand-invicta" src="invicta-logo.png" alt="">'
+          : `<span class="brand-logo brand-${brand}">${brandText}</span>`;
       tile.innerHTML = `<span class="tile-label tile-label--brand">${brandLogoMarkup}</span><div class="tile-tokens"></div>`;
       return;
     }
