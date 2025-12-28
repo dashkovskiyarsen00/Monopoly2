@@ -735,6 +735,9 @@ button {
 }
 
 .brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -750,6 +753,8 @@ button {
   color: #d6a440;
   font-family: "Georgia", "Times New Roman", serif;
   letter-spacing: 2px;
+  width: 72px;
+  height: auto;
 }
 
 .tile.active-turn {
