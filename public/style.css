@@ -759,6 +759,11 @@ button {
   height: auto;
 }
 
+.tile.edge-bottom .brand-logo.brand-invicta {
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
 .tile.active-turn {
   outline: 2px solid rgba(91, 211, 141, 0.75);
   box-shadow: 0 0 18px rgba(91, 211, 141, 0.35);
