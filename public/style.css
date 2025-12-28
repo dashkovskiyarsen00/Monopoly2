@@ -753,6 +753,8 @@ button {
   color: #d6a440;
   font-family: "Georgia", "Times New Roman", serif;
   letter-spacing: 2px;
+  display: block;
+  max-width: 100%;
   width: 72px;
   height: auto;
 }
