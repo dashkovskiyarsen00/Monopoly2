@@ -395,7 +395,7 @@ button {
   flex: 1;
   display: grid;
   grid-template-columns: 220px 1fr 260px;
-  gap: 16px;
+  gap: 12px;
   min-height: 0;
 }
 
@@ -449,8 +449,9 @@ button {
 }
 
 .board {
-  width: 640px;
-  height: 640px;
+  width: min(100%, calc(100vh - 140px));
+  height: min(100%, calc(100vh - 140px));
+  aspect-ratio: 1 / 1;
   background: #101319;
   border-radius: 20px;
   border: 2px solid rgba(91, 211, 141, 0.4);
@@ -577,8 +578,8 @@ button {
   }
 
   .board {
-    width: 520px;
-    height: 520px;
+    width: min(100%, calc(100vh - 160px));
+    height: min(100%, calc(100vh - 160px));
   }
 }
 
@@ -603,7 +604,7 @@ button {
   }
 
   .board {
-    width: min(90vw, 520px);
-    height: min(90vw, 520px);
+    width: min(90vw, calc(100vh - 180px));
+    height: min(90vw, calc(100vh - 180px));
   }
 }
