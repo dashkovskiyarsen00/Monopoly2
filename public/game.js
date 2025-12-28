@@ -205,7 +205,7 @@ const prepareBoardTiles = () => {
       const brandText = tile.dataset.brandText || label;
       const brandLogoMarkup =
         brand === 'invicta'
-          ? '<img class="brand-logo brand-invicta" src="invicta-logo.png" alt="INVICTA">'
+          ? '<img class="brand-logo brand-invicta" src="invicta-logo.png" alt="">'
           : `<span class="brand-logo brand-${brand}">${brandText}</span>`;
       tile.innerHTML = `<span class="tile-label tile-label--brand">${brandLogoMarkup}</span><div class="tile-tokens"></div>`;
       return;
