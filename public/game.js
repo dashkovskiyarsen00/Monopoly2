@@ -21,6 +21,7 @@ const rollDiceButton = document.getElementById('roll-dice');
 const chatInput = document.getElementById('chat-input');
 const sendChat = document.getElementById('send-chat');
 const diceValues = document.querySelectorAll('.dice-panel .dice');
+const diceStatus = document.getElementById('dice-status');
 const searchResults = document.getElementById('search-results');
 const roomList = document.getElementById('room-list');
 const roomEmpty = document.getElementById('room-empty');
@@ -46,8 +47,10 @@ const loginPassword = document.getElementById('login-password');
 const registerName = document.getElementById('register-name');
 const registerEmail = document.getElementById('register-email');
 const registerPassword = document.getElementById('register-password');
+const boardTiles = document.querySelectorAll('.board .tile');
 
 let notificationTimeout;
+let gameState = null;
 
 const STORAGE_KEYS = {
   users: 'monopolyUsers',
@@ -73,6 +76,12 @@ const state = {
   rooms: loadFromStorage(STORAGE_KEYS.rooms, []),
   currentUserId: loadFromStorage(STORAGE_KEYS.currentUser, null),
 };
+
+const PLAYER_COLORS = ['#5bd38d', '#60a5fa', '#f472b6', '#fbbf24', '#a78bfa', '#f97316'];
+const START_BONUS = 200;
+const INITIAL_CASH = 1500;
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const activateTab = (tabId) => {
   tabs.forEach((tab) => {
@@ -172,6 +181,25 @@ const updateProfile = () => {
   }
 };
 
+const prepareBoardTiles = () => {
+  if (!boardTiles.length) {
+    return;
+  }
+  boardTiles.forEach((tile) => {
+    const label = tile.textContent.trim();
+    tile.innerHTML = `<span class="tile-label">${label}</span><div class="tile-tokens"></div>`;
+  });
+};
+
+const getOrderedTiles = () =>
+  Array.from(boardTiles).sort(
+    (a, b) => Number(a.dataset.index || 0) - Number(b.dataset.index || 0),
+  );
+
+const clearActiveTiles = () => {
+  boardTiles.forEach((tile) => tile.classList.remove('active-turn'));
+};
+
 const addMatchEvent = (message) => {
   if (!matchEvents) {
     return;
@@ -193,29 +221,335 @@ const setMatchEvents = (events = []) => {
   events.forEach((event) => addMatchEvent(event));
 };
 
-const renderPlayersList = (room) => {
+const renderPlayersList = () => {
   if (!playersList) {
     return;
   }
   playersList.innerHTML = '';
-  if (!room) {
+  if (!gameState) {
     return;
   }
-  const userMap = new Map(state.users.map((user) => [user.id, user]));
-  room.players.forEach((playerId, index) => {
-    const player = userMap.get(playerId);
+  gameState.players.forEach((player, index) => {
     const item = document.createElement('li');
-    if (index === 0) {
+    if (index === gameState.currentTurn) {
       item.classList.add('active');
     }
-    item.textContent = player ? `${player.name} · ${player.rating}` : 'Неизвестный игрок';
+    if (player.bankrupt) {
+      item.classList.add('bankrupt');
+    }
+    const name = document.createElement('span');
+    name.className = 'player-name';
+    const dot = document.createElement('span');
+    dot.className = 'player-dot';
+    dot.style.background = player.color;
+    const label = document.createElement('span');
+    label.textContent = player.name;
+    name.appendChild(dot);
+    name.appendChild(label);
+    const cash = document.createElement('span');
+    cash.className = 'player-cash';
+    cash.textContent = `💰 ${player.cash}`;
+    item.appendChild(name);
+    item.appendChild(cash);
     playersList.appendChild(item);
   });
-  for (let i = room.players.length; i < room.maxPlayers; i += 1) {
-    const item = document.createElement('li');
-    item.textContent = 'Свободный слот';
-    playersList.appendChild(item);
+  if (gameState.maxPlayers && gameState.players.length < gameState.maxPlayers) {
+    for (let i = gameState.players.length; i < gameState.maxPlayers; i += 1) {
+      const item = document.createElement('li');
+      item.textContent = 'Свободный слот';
+      playersList.appendChild(item);
+    }
   }
+};
+
+const updateGameMeta = () => {
+  if (!gameState || !gameMeta) {
+    return;
+  }
+  const currentPlayer = gameState.players[gameState.currentTurn];
+  const roundLabel = `Раунд ${gameState.round}`;
+  gameMeta.textContent = `${roundLabel} · Ход игрока: ${currentPlayer.name}`;
+  if (diceStatus) {
+    diceStatus.textContent = gameState.isBusy
+      ? 'Выполняется ход...'
+      : currentPlayer.isHuman
+        ? 'Ваш ход — бросайте кубики'
+        : `Ход игрока ${currentPlayer.name}`;
+  }
+};
+
+const placeToken = (player, position) => {
+  const tiles = getOrderedTiles();
+  const tile = tiles[position];
+  if (!tile || !player.token) {
+    return;
+  }
+  const container = tile.querySelector('.tile-tokens');
+  if (!container) {
+    return;
+  }
+  container.appendChild(player.token);
+};
+
+const highlightActiveTile = () => {
+  if (!gameState) {
+    return;
+  }
+  clearActiveTiles();
+  const tiles = getOrderedTiles();
+  const activePlayer = gameState.players[gameState.currentTurn];
+  const tile = tiles[activePlayer.position];
+  if (tile) {
+    tile.classList.add('active-turn');
+  }
+};
+
+const updateTokens = () => {
+  if (!boardTiles.length) {
+    return;
+  }
+  boardTiles.forEach((tile) => {
+    const container = tile.querySelector('.tile-tokens');
+    if (container) {
+      container.innerHTML = '';
+    }
+  });
+  clearActiveTiles();
+  if (!gameState) {
+    return;
+  }
+  gameState.players.forEach((player) => {
+    placeToken(player, player.position);
+  });
+  highlightActiveTile();
+};
+
+const buildPlayers = (room) => {
+  const currentUser = getCurrentUser();
+  const basePlayers = [];
+  const userMap = new Map(state.users.map((user) => [user.id, user]));
+  if (room?.players?.length) {
+    room.players.forEach((playerId, index) => {
+      const user = userMap.get(playerId);
+      basePlayers.push({
+        id: playerId,
+        name: user ? user.name : `Игрок ${index + 1}`,
+        color: PLAYER_COLORS[index % PLAYER_COLORS.length],
+        cash: INITIAL_CASH,
+        position: 0,
+        isHuman: Boolean(currentUser && user && user.id === currentUser.id),
+      });
+    });
+  }
+  if (basePlayers.length === 0) {
+    const guestName = currentUser ? currentUser.name : 'Гость';
+    basePlayers.push({
+      id: currentUser ? currentUser.id : 'guest',
+      name: guestName,
+      color: PLAYER_COLORS[0],
+      cash: INITIAL_CASH,
+      position: 0,
+      isHuman: true,
+    });
+  }
+  const targetPlayers = Math.max(room?.maxPlayers || 4, 2);
+  while (basePlayers.length < Math.min(targetPlayers, 4)) {
+    const index = basePlayers.length;
+    basePlayers.push({
+      id: `bot-${index}`,
+      name: `Бот ${index}`,
+      color: PLAYER_COLORS[index % PLAYER_COLORS.length],
+      cash: INITIAL_CASH,
+      position: 0,
+      isHuman: false,
+    });
+  }
+  basePlayers.forEach((player) => {
+    const token = document.createElement('div');
+    token.className = 'player-token';
+    token.style.background = player.color;
+    player.token = token;
+  });
+  return basePlayers;
+};
+
+const initializeGame = (room) => {
+  gameState = {
+    players: buildPlayers(room),
+    currentTurn: 0,
+    round: 1,
+    isBusy: false,
+    maxPlayers: room?.maxPlayers || 4,
+  };
+  updateTokens();
+  renderPlayersList();
+  updateGameMeta();
+  const currentPlayer = gameState.players[gameState.currentTurn];
+  if (rollDiceButton) {
+    rollDiceButton.disabled = !currentPlayer.isHuman;
+  }
+  if (!currentPlayer.isHuman) {
+    setTimeout(() => handleAutoTurn(), 1200);
+  }
+};
+
+const applyTileEffect = (player, tile) => {
+  if (!tile) {
+    return;
+  }
+  let delta = 0;
+  if (tile.classList.contains('tax')) {
+    delta = -150;
+    addMatchEvent(`${player.name} оплатил штраф ${Math.abs(delta)}.`);
+  } else if (tile.classList.contains('chance')) {
+    delta = Math.random() > 0.5 ? 120 : -80;
+    addMatchEvent(
+      delta >= 0
+        ? `${player.name} получил бонус ${delta} за руну.`
+        : `${player.name} потерял ${Math.abs(delta)} из-за руны.`,
+    );
+  } else if (tile.classList.contains('utility')) {
+    delta = 75;
+    addMatchEvent(`${player.name} получил ${delta} за объект поддержки.`);
+  } else if (tile.classList.contains('transport')) {
+    delta = 120;
+    addMatchEvent(`${player.name} заработал ${delta} на транспортной точке.`);
+  } else if (tile.classList.contains('property')) {
+    delta = -100;
+    addMatchEvent(`${player.name} инвестировал ${Math.abs(delta)} в собственность.`);
+  }
+  if (delta !== 0) {
+    player.cash = Math.max(0, player.cash + delta);
+  }
+};
+
+const checkBankrupt = (player) => {
+  if (player.cash > 0 || player.bankrupt) {
+    return false;
+  }
+  player.bankrupt = true;
+  addMatchEvent(`${player.name} банкрот и выбывает из игры.`);
+  return true;
+};
+
+const movePlayer = async (player, steps) => {
+  const tiles = getOrderedTiles();
+  const totalTiles = tiles.length;
+  player.token?.classList.add('moving');
+  for (let i = 0; i < steps; i += 1) {
+    await delay(320);
+    player.position = (player.position + 1) % totalTiles;
+    if (player.position === 0) {
+      player.cash += START_BONUS;
+      addMatchEvent(`${player.name} прошёл старт и получил ${START_BONUS}.`);
+    }
+    updateTokens();
+  }
+  player.token?.classList.remove('moving');
+  const tile = tiles[player.position];
+  applyTileEffect(player, tile);
+  checkBankrupt(player);
+  renderPlayersList();
+};
+
+const getNextActiveTurn = () => {
+  if (!gameState) {
+    return 0;
+  }
+  const activePlayers = gameState.players.filter((player) => !player.bankrupt);
+  if (activePlayers.length <= 1) {
+    return null;
+  }
+  let nextIndex = gameState.currentTurn;
+  let safety = 0;
+  do {
+    nextIndex = (nextIndex + 1) % gameState.players.length;
+    safety += 1;
+  } while (gameState.players[nextIndex].bankrupt && safety < gameState.players.length);
+  return nextIndex;
+};
+
+const finalizeGameIfNeeded = () => {
+  if (!gameState) {
+    return false;
+  }
+  const activePlayers = gameState.players.filter((player) => !player.bankrupt);
+  if (activePlayers.length <= 1) {
+    const winner = activePlayers[0];
+    addMatchEvent(winner ? `${winner.name} победил в матче!` : 'Матч завершён.');
+    if (diceStatus) {
+      diceStatus.textContent = 'Матч завершён';
+    }
+    if (rollDiceButton) {
+      rollDiceButton.disabled = true;
+    }
+    return true;
+  }
+  return false;
+};
+
+const endTurn = () => {
+  if (!gameState) {
+    return;
+  }
+  const nextIndex = getNextActiveTurn();
+  if (nextIndex === null) {
+    finalizeGameIfNeeded();
+    return;
+  }
+  if (nextIndex === 0) {
+    gameState.round += 1;
+  }
+  gameState.currentTurn = nextIndex;
+  renderPlayersList();
+  updateGameMeta();
+  highlightActiveTile();
+  if (rollDiceButton) {
+    const activePlayer = gameState.players[gameState.currentTurn];
+    rollDiceButton.disabled = !activePlayer.isHuman;
+  }
+  const activePlayer = gameState.players[gameState.currentTurn];
+  if (!activePlayer.isHuman) {
+    setTimeout(() => handleAutoTurn(), 1100);
+  }
+};
+
+const performRoll = async (player) => {
+  if (!diceValues.length || !gameState || gameState.isBusy) {
+    return;
+  }
+  gameState.isBusy = true;
+  if (rollDiceButton) {
+    rollDiceButton.disabled = true;
+  }
+  if (diceStatus) {
+    diceStatus.textContent = 'Бросок кубиков...';
+  }
+  diceValues.forEach((die) => die.classList.add('rolling'));
+  await delay(600);
+  const values = Array.from(diceValues).map(() => Math.ceil(Math.random() * 6));
+  diceValues.forEach((die, index) => {
+    die.textContent = values[index];
+    die.classList.remove('rolling');
+  });
+  const total = values.reduce((sum, value) => sum + value, 0);
+  addMatchEvent(`${player.name} бросил кубики: ${values.join(' и ')}.`);
+  await movePlayer(player, total);
+  gameState.isBusy = false;
+  if (!finalizeGameIfNeeded()) {
+    endTurn();
+  }
+};
+
+const handleAutoTurn = () => {
+  if (!gameState) {
+    return;
+  }
+  const player = gameState.players[gameState.currentTurn];
+  if (player.isHuman) {
+    return;
+  }
+  performRoll(player);
 };
 
 const openGameOverlay = (context = {}) => {
@@ -231,14 +565,19 @@ const openGameOverlay = (context = {}) => {
   if (context.mode && gameMeta) {
     gameMeta.textContent = context.mode;
   }
-  if (context.players) {
-    renderPlayersList(context.players);
-  }
   if (context.events) {
     setMatchEvents(context.events);
   }
   if (context.event) {
     addMatchEvent(context.event);
+  }
+  if (context.room) {
+    initializeGame(context.room);
+  } else if (!gameState) {
+    initializeGame();
+  }
+  if (!context.events && !context.event) {
+    addMatchEvent('Матч готов. Бросайте кубики.');
   }
   showNotification(context.notice || 'Матч открыт. Подготовка к игре.');
 };
@@ -250,6 +589,8 @@ const closeGameOverlay = () => {
   gameOverlay.classList.remove('active');
   gameOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('game-active');
+  gameState = null;
+  updateTokens();
   showNotification('Возвращаемся в лобби.');
 };
 
@@ -305,7 +646,7 @@ const joinRoom = (roomId) => {
   openGameOverlay({
     title: `Комната: ${room.name}`,
     mode: `Режим: ${room.mode} · ${playersLabel}`,
-    players: room,
+    room,
     events: [`${user.name} присоединился к комнате.`],
     notice: `Подключение к комнате «${room.name}».`,
   });
@@ -401,7 +742,7 @@ const handleRoomSubmit = (event) => {
   openGameOverlay({
     title: `Комната: ${room.name}`,
     mode: `Режим: ${room.mode} · 1/${room.maxPlayers} игроков`,
-    players: room,
+    room,
     events: [`${user.name} создал комнату.`],
     notice: 'Комната создана и ожидает игроков.',
   });
@@ -541,20 +882,14 @@ buyButtons.forEach((button) => {
 
 if (rollDiceButton) {
   rollDiceButton.addEventListener('click', () => {
-    if (!diceValues.length) {
+    if (!gameState) {
+      initializeGame();
+    }
+    const currentPlayer = gameState.players[gameState.currentTurn];
+    if (!currentPlayer.isHuman) {
       return;
     }
-    rollDiceButton.disabled = true;
-    const values = Array.from(diceValues).map(() => Math.ceil(Math.random() * 6));
-    diceValues.forEach((die, index) => {
-      die.textContent = values[index];
-    });
-    const user = getCurrentUser();
-    addMatchEvent(`${user ? user.name : 'Игрок'} бросил кубики: ${values.join(' и ')}`);
-    showNotification(`Бросок выполнен: ${values.join(' и ')}.`);
-    setTimeout(() => {
-      rollDiceButton.disabled = false;
-    }, 1200);
+    performRoll(currentPlayer);
   });
 }
 
@@ -617,6 +952,7 @@ if (registerForm) {
   registerForm.addEventListener('submit', handleRegister);
 }
 
+prepareBoardTiles();
 updateOnlineCount();
 updateProfile();
 renderRooms();
