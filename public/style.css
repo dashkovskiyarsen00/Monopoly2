@@ -731,8 +731,9 @@ button {
   letter-spacing: 2px;
 }
 
-.tile.edge-bottom.brand-tile.color-green::after {
-  bottom: -16px;
+.tile.edge-bottom.brand-tile::after {
+  top: -7px;
+  bottom: auto;
 }
 
 .brand-logo {
