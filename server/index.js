@@ -20,10 +20,11 @@ const mimeTypes = {
 const server = http.createServer((req, res) => {
   const requestUrl = req.url ? req.url.split("?")[0] : "/";
   const safePath = path.normalize(requestUrl).replace(/^(\.\.[/\\])+/, "");
+  const relativePath = safePath.replace(/^\/+/, "");
   const filePath =
     safePath === "/"
       ? path.join(publicDir, "index.html")
-      : path.join(publicDir, safePath);
+      : path.join(publicDir, relativePath);
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
