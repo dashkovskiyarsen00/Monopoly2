@@ -726,15 +726,12 @@ button {
 }
 
 .tile.edge-bottom.brand-tile {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
   letter-spacing: 2px;
 }
 
-.tile.edge-bottom.brand-tile::after {
-  top: auto;
-  bottom: -7px;
-  border-radius: 0 0 14px 14px;
+.tile.edge-bottom.brand-tile .tile-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
 .brand-logo {
