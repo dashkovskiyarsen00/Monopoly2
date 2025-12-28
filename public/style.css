@@ -732,8 +732,9 @@ button {
 }
 
 .tile.edge-bottom.brand-tile::after {
-  top: -7px;
-  bottom: auto;
+  top: auto;
+  bottom: -7px;
+  border-radius: 0 0 14px 14px;
 }
 
 .brand-logo {
