@@ -612,37 +612,38 @@ button {
   content: "";
   position: absolute;
   background: var(--monopoly-color, transparent);
+  pointer-events: none;
 }
 
 .tile.edge-bottom::after {
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 6px;
+  left: -2px;
+  right: -2px;
+  bottom: -6px;
+  height: 10px;
   border-radius: 0 0 14px 14px;
 }
 
 .tile.edge-top::after {
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 6px;
+  left: -2px;
+  right: -2px;
+  top: -6px;
+  height: 10px;
   border-radius: 14px 14px 0 0;
 }
 
 .tile.edge-left::after {
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 6px;
+  top: -2px;
+  bottom: -2px;
+  left: -6px;
+  width: 10px;
   border-radius: 14px 0 0 14px;
 }
 
 .tile.edge-right::after {
-  top: 0;
-  bottom: 0;
-  right: 0;
-  width: 6px;
+  top: -2px;
+  bottom: -2px;
+  right: -6px;
+  width: 10px;
   border-radius: 0 14px 14px 0;
 }
 
