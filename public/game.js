@@ -189,6 +189,15 @@ const prepareBoardTiles = () => {
   boardTiles.forEach((tile) => {
     const label = tile.textContent.trim();
     tile.innerHTML = `<span class="tile-label">${label}</span><div class="tile-tokens"></div>`;
+    const illustration = tile.dataset.illustration;
+    if (illustration) {
+      tile.classList.add('tile-illustrated');
+      const image = document.createElement('img');
+      image.className = 'tile-illustration';
+      image.src = illustration;
+      image.alt = label;
+      tile.prepend(image);
+    }
   });
 };
 
