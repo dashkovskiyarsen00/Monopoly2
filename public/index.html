@@ -26,7 +26,7 @@
         <button class="nav-item" data-tab="rules">Правила</button>
       </nav>
       <div class="sidebar-footer">
-        <button class="secondary">Сменить аккаунт</button>
+        <button class="secondary" id="switch-account">Сменить аккаунт</button>
       </div>
     </aside>
 
@@ -37,10 +37,11 @@
           <span>Онлайн: 1245 игроков</span>
         </div>
         <div class="actions">
-          <button class="ghost">Помощь</button>
-          <button class="primary" id="open-game">Создать игру</button>
+          <button class="ghost" id="open-help">Помощь</button>
+          <button class="primary" id="open-game" data-game-title="Комната: Новая игра" data-game-mode="Создание комнаты">Создать игру</button>
         </div>
       </header>
+      <div class="notification" id="notification" aria-live="polite"></div>
 
       <section class="tab-panel active" id="tab-lobby">
         <div class="panel-header">
@@ -51,12 +52,12 @@
           <div class="card">
             <h3>Быстрое подключение</h3>
             <p>Подберите игру с равным рейтингом и готовыми правилами.</p>
-            <button class="primary" id="quick-join">Найти матч</button>
+            <button class="primary" id="quick-join" data-game-title="Матч: Быстрый поиск" data-game-mode="Автоматический подбор">Найти матч</button>
           </div>
           <div class="card">
             <h3>Создать комнату</h3>
             <p>Настройте количество игроков, тип карты и пригласите друзей.</p>
-            <button class="secondary" id="create-room">Создать</button>
+            <button class="secondary" id="create-room" data-game-title="Комната: Настроить матч" data-game-mode="Создание комнаты">Создать</button>
           </div>
           <div class="card">
             <h3>Текущие комнаты</h3>
@@ -66,21 +67,21 @@
                   <strong>Dark Bazaar</strong>
                   <span>2/4 игроков · ставка 200</span>
                 </div>
-                <button class="ghost join-room">Войти</button>
+                <button class="ghost join-room" data-game-title="Матч: Dark Bazaar" data-game-mode="Подключение к комнате">Войти</button>
               </li>
               <li>
                 <div>
                   <strong>Radiant Fortune</strong>
                   <span>3/6 игроков · ставка 500</span>
                 </div>
-                <button class="ghost join-room">Войти</button>
+                <button class="ghost join-room" data-game-title="Матч: Radiant Fortune" data-game-mode="Подключение к комнате">Войти</button>
               </li>
               <li>
                 <div>
                   <strong>Dire Prime</strong>
                   <span>4/4 игроков · ставка 1000</span>
                 </div>
-                <button class="ghost join-room">Войти</button>
+                <button class="ghost join-room" data-game-title="Матч: Dire Prime" data-game-mode="Подключение к комнате">Войти</button>
               </li>
             </ul>
           </div>
@@ -118,21 +119,22 @@
           <p>Ищите друзей и соперников для дуэлей и клановых матчей.</p>
         </div>
         <div class="search-box">
-          <input type="text" placeholder="Введите ник или ID" />
-          <button class="primary">Найти</button>
+          <input type="text" id="search-input" placeholder="Введите ник или ID" />
+          <button class="primary" id="search-button">Найти</button>
         </div>
+        <p class="search-empty" id="search-empty">Ничего не найдено. Попробуйте другой ник.</p>
         <div class="search-results">
           <div class="result-card">
             <span>NightStalker_77</span>
-            <button class="ghost">Добавить</button>
+            <button class="ghost add-friend">Добавить</button>
           </div>
           <div class="result-card">
             <span>RadiantQueen</span>
-            <button class="ghost">Добавить</button>
+            <button class="ghost add-friend">Добавить</button>
           </div>
           <div class="result-card">
             <span>DireOracle</span>
-            <button class="ghost">Добавить</button>
+            <button class="ghost add-friend">Добавить</button>
           </div>
         </div>
       </section>
@@ -148,7 +150,7 @@
             <p><strong>Ник:</strong> ShadowBroker</p>
             <p><strong>Ранг:</strong> Архонт</p>
             <p><strong>Клан:</strong> D2 Monopoly Guild</p>
-            <button class="secondary">Редактировать</button>
+            <button class="secondary" id="edit-profile">Редактировать</button>
           </div>
           <div class="profile-card stats">
             <h3>Статистика</h3>
@@ -180,15 +182,15 @@
         <div class="settings-list">
           <label class="setting-item">
             <span>Громкость эффектов</span>
-            <input type="range" value="70" />
+            <input type="range" value="70" data-setting="Громкость эффектов" />
           </label>
           <label class="setting-item">
             <span>Музыка</span>
-            <input type="range" value="45" />
+            <input type="range" value="45" data-setting="Музыка" />
           </label>
           <label class="setting-item">
             <span>Уведомления</span>
-            <input type="checkbox" checked />
+            <input type="checkbox" checked data-setting="Уведомления" />
           </label>
         </div>
       </section>
@@ -202,17 +204,17 @@
           <div class="store-card">
             <h3>Набор "Radiant Glory"</h3>
             <p>Фишки, кубики и поле в светлом стиле.</p>
-            <button class="primary">Купить за 1200</button>
+            <button class="primary buy-button" data-item="Набор &quot;Radiant Glory&quot;">Купить за 1200</button>
           </div>
           <div class="store-card">
             <h3>Набор "Dire Dominion"</h3>
             <p>Темные эффекты, редкий баннер и уникальный чат.</p>
-            <button class="secondary">Купить за 1800</button>
+            <button class="secondary buy-button" data-item="Набор &quot;Dire Dominion&quot;">Купить за 1800</button>
           </div>
           <div class="store-card">
             <h3>Фишка "Invoker"</h3>
             <p>Легендарная анимация и эффект победы.</p>
-            <button class="ghost">Купить за 900</button>
+            <button class="ghost buy-button" data-item="Фишка &quot;Invoker&quot;">Купить за 900</button>
           </div>
         </div>
       </section>
@@ -237,10 +239,10 @@
           <button class="ghost" id="exit-game">Выйти из игры</button>
           <div class="game-title">
             <span class="glow"></span>
-            <h2>Матч: Dire Prime</h2>
+            <h2 id="game-title">Матч: Dire Prime</h2>
           </div>
           <div class="game-meta">
-            <span>Раунд 4 · Ход игрока: ShadowBroker</span>
+            <span id="game-meta">Раунд 4 · Ход игрока: ShadowBroker</span>
           </div>
         </div>
         <div class="game-layout">
@@ -255,7 +257,7 @@
             <div class="dice-panel">
               <div class="dice">4</div>
               <div class="dice">3</div>
-              <button class="primary">Бросить кубики</button>
+              <button class="primary" id="roll-dice">Бросить кубики</button>
             </div>
           </aside>
 
@@ -308,7 +310,7 @@
                 </div>
                 <div class="center-card">
                   <h4>События матча</h4>
-                  <ul>
+                  <ul id="match-events">
                     <li>RadiantQueen купил "Алтарь"</li>
                     <li>DireOracle активировал руну скорости</li>
                     <li>ShadowBroker получил бонус 500</li>
@@ -326,8 +328,8 @@
               <p><strong>DireOracle:</strong> Руна богатства в действии.</p>
             </div>
             <div class="chat-input">
-              <input type="text" placeholder="Введите сообщение" />
-              <button class="primary">Отправить</button>
+              <input type="text" id="chat-input" placeholder="Введите сообщение" />
+              <button class="primary" id="send-chat">Отправить</button>
             </div>
           </aside>
         </div>
