@@ -595,6 +595,76 @@ button {
   box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.35);
 }
 
+.tile.color-band::after {
+  content: "";
+  position: absolute;
+  background: var(--monopoly-color, transparent);
+}
+
+.tile.edge-bottom::after {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  border-radius: 0 0 14px 14px;
+}
+
+.tile.edge-top::after {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 6px;
+  border-radius: 14px 14px 0 0;
+}
+
+.tile.edge-left::after {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 6px;
+  border-radius: 14px 0 0 14px;
+}
+
+.tile.edge-right::after {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 6px;
+  border-radius: 0 14px 14px 0;
+}
+
+.tile.color-green {
+  --monopoly-color: #34d399;
+}
+
+.tile.color-blue {
+  --monopoly-color: #60a5fa;
+}
+
+.tile.color-orange {
+  --monopoly-color: #f59e0b;
+}
+
+.tile.color-purple {
+  --monopoly-color: #a855f7;
+}
+
+.tile.color-teal {
+  --monopoly-color: #2dd4bf;
+}
+
+.tile.color-pink {
+  --monopoly-color: #f472b6;
+}
+
+.tile.color-yellow {
+  --monopoly-color: #facc15;
+}
+
+.tile.color-red {
+  --monopoly-color: #f87171;
+}
+
 .tile-label {
   line-height: 1.2;
 }
