@@ -37,6 +37,7 @@ const roomForm = document.getElementById('room-form');
 const roomNameInput = document.getElementById('room-name');
 const roomPlayersInput = document.getElementById('room-players');
 const roomModeInput = document.getElementById('room-mode');
+const roomThemeInput = document.getElementById('room-theme');
 const roomBetInput = document.getElementById('room-bet');
 const roomPrivacyInput = document.getElementById('room-privacy');
 const authOverlay = document.getElementById('auth-overlay');
@@ -52,6 +53,8 @@ const boardTiles = document.querySelectorAll('.board .tile');
 
 let notificationTimeout;
 let gameState = null;
+
+const BOARD_THEME_CLASSES = ['theme-classic', 'theme-dota'];
 
 const STORAGE_KEYS = {
   users: 'monopolyUsers',
@@ -149,6 +152,15 @@ const closeRoomModal = () => {
   }
   roomModal.classList.remove('active');
   roomModal.setAttribute('aria-hidden', 'true');
+};
+
+const setBoardTheme = (theme) => {
+  if (!gameOverlay) {
+    return;
+  }
+  const normalized = theme === 'classic' ? 'classic' : 'dota';
+  gameOverlay.classList.remove(...BOARD_THEME_CLASSES);
+  gameOverlay.classList.add(normalized === 'classic' ? 'theme-classic' : 'theme-dota');
 };
 
 const updateOnlineCount = () => {
@@ -382,6 +394,7 @@ const initializeGame = (room) => {
     isBusy: false,
     maxPlayers: room?.maxPlayers || 4,
     roomId: room?.id || null,
+    theme: room?.theme || 'dota',
   };
   updateTokens();
   renderPlayersList();
@@ -602,6 +615,7 @@ const openGameOverlay = (context = {}) => {
   gameOverlay.classList.add('active');
   gameOverlay.setAttribute('aria-hidden', 'false');
   document.body.classList.add('game-active');
+  setBoardTheme(context.theme || context.room?.theme || gameState?.theme || 'dota');
   if (context.title && gameTitle) {
     gameTitle.textContent = context.title;
   }
@@ -634,6 +648,7 @@ const closeGameOverlay = () => {
   }
   gameOverlay.classList.remove('active');
   gameOverlay.setAttribute('aria-hidden', 'true');
+  gameOverlay.classList.remove(...BOARD_THEME_CLASSES);
   document.body.classList.remove('game-active');
   gameState = null;
   updateTokens();
@@ -655,7 +670,8 @@ const renderRooms = () => {
     const meta = document.createElement('span');
     title.textContent = room.name;
     const betLabel = room.bet > 0 ? `ставка ${room.bet}` : 'без ставки';
-    meta.textContent = `${room.players.length}/${room.maxPlayers} игроков · режим ${room.mode} · ${betLabel} · ${room.privacy}`;
+    const themeLabel = room.theme === 'classic' ? 'классическая' : 'dota';
+    meta.textContent = `${room.players.length}/${room.maxPlayers} игроков · режим ${room.mode} · тема ${themeLabel} · ${betLabel} · ${room.privacy}`;
     info.appendChild(title);
     info.appendChild(meta);
     const joinButton = document.createElement('button');
@@ -769,6 +785,7 @@ const handleRoomSubmit = (event) => {
   }
   const maxPlayers = Number(roomPlayersInput.value);
   const bet = Number(roomBetInput.value || 0);
+  const theme = roomThemeInput?.value === 'classic' ? 'classic' : 'dota';
   const room = {
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
     name,
@@ -776,6 +793,7 @@ const handleRoomSubmit = (event) => {
     players: [user.id],
     maxPlayers,
     mode: roomModeInput.value,
+    theme,
     bet,
     privacy: roomPrivacyInput.value,
     createdAt: new Date().toISOString(),
