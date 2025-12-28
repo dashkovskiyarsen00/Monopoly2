@@ -398,7 +398,7 @@ button {
   backdrop-filter: blur(6px);
   display: none;
   flex-direction: column;
-  padding: 24px;
+  padding: 12px 16px 16px;
   z-index: 20;
 }
 
@@ -446,8 +446,8 @@ button {
 .game-layout {
   flex: 1;
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 300px;
-  gap: 12px;
+  grid-template-columns: 190px minmax(0, 1fr) 260px;
+  gap: 10px;
   min-height: 0;
 }
 
@@ -548,14 +548,15 @@ button {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  min-height: 0;
 }
 
 .board {
-  width: min(100%, calc(100vh - 40px));
-  height: min(100%, calc(100vh - 40px));
+  width: min(100%, calc(100vh - 24px));
+  height: min(100%, calc(100vh - 24px));
   aspect-ratio: 1 / 1;
   background: #101319;
-  border-radius: 20px;
+  border-radius: 22px;
   border: 2px solid rgba(91, 211, 141, 0.4);
   display: grid;
   grid-template-columns: 1.55fr repeat(9, 1fr) 1.55fr;
@@ -567,8 +568,8 @@ button {
 .tile {
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 14px 10px;
-  font-size: 13px;
+  padding: 18px 12px;
+  font-size: 14px;
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -578,7 +579,7 @@ button {
   min-height: 0;
   background: linear-gradient(135deg, rgba(27, 32, 38, 0.9), rgba(14, 17, 22, 0.9));
   color: var(--text);
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.35);
 }
 
@@ -602,8 +603,8 @@ button {
 }
 
 .player-token {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.35);
@@ -620,7 +621,7 @@ button {
 
 .corner {
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.6px;
   background: linear-gradient(135deg, rgba(91, 211, 141, 0.35), rgba(27, 32, 38, 0.9));
   border-radius: 16px;
@@ -871,12 +872,12 @@ button {
 
 @media (max-width: 1200px) {
   .game-layout {
-    grid-template-columns: 200px 1fr 260px;
+    grid-template-columns: 180px 1fr 230px;
   }
 
   .board {
-    width: min(100%, calc(100vh - 110px));
-    height: min(100%, calc(100vh - 110px));
+    width: min(100%, calc(100vh - 90px));
+    height: min(100%, calc(100vh - 90px));
   }
 }
 
@@ -901,7 +902,7 @@ button {
   }
 
   .board {
-    width: min(92vw, calc(100vh - 160px));
-    height: min(92vw, calc(100vh - 160px));
+    width: min(96vw, calc(100vh - 140px));
+    height: min(96vw, calc(100vh - 140px));
   }
 }
