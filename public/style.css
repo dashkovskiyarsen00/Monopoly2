@@ -426,8 +426,18 @@ button {
   gap: 12px;
 }
 
+.game-title-text {
+  display: grid;
+  gap: 2px;
+}
+
 .game-title h2 {
   font-size: 22px;
+}
+
+.game-subtitle {
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .glow {
@@ -660,7 +670,7 @@ button {
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   display: grid;
-  gap: 12px;
+  gap: 8px;
   padding: 16px;
 }
 
@@ -671,6 +681,11 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 13px;
   color: var(--muted);
+}
+
+.center-card.match-events {
+  background: rgba(15, 18, 23, 0.35);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .center-card h3,
