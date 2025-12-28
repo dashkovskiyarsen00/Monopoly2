@@ -18,6 +18,7 @@ const gameTitle = document.getElementById('game-title');
 const gameMeta = document.getElementById('game-meta');
 const matchEvents = document.getElementById('match-events');
 const rollDiceButton = document.getElementById('roll-dice');
+const surrenderButton = document.getElementById('surrender-game');
 const chatInput = document.getElementById('chat-input');
 const sendChat = document.getElementById('send-chat');
 const diceValues = document.querySelectorAll('.dice-panel .dice');
@@ -380,6 +381,7 @@ const initializeGame = (room) => {
     round: 1,
     isBusy: false,
     maxPlayers: room?.maxPlayers || 4,
+    roomId: room?.id || null,
   };
   updateTokens();
   renderPlayersList();
@@ -390,6 +392,30 @@ const initializeGame = (room) => {
   }
   if (!currentPlayer.isHuman) {
     setTimeout(() => handleAutoTurn(), 1200);
+  }
+};
+
+const handleSurrender = () => {
+  if (!gameState || gameState.isBusy) {
+    return;
+  }
+  const playerIndex = gameState.players.findIndex((player) => player.isHuman && !player.bankrupt);
+  if (playerIndex === -1) {
+    return;
+  }
+  const player = gameState.players[playerIndex];
+  player.cash = 0;
+  player.bankrupt = true;
+  addMatchEvent(`${player.name} сдался и покинул матч.`);
+  renderPlayersList();
+  updateTokens();
+  if (finalizeGameIfNeeded()) {
+    return;
+  }
+  if (playerIndex === gameState.currentTurn) {
+    endTurn();
+  } else {
+    updateGameMeta();
   }
 };
 
@@ -421,6 +447,19 @@ const applyTileEffect = (player, tile) => {
   if (delta !== 0) {
     player.cash = Math.max(0, player.cash + delta);
   }
+};
+
+const closeRoomById = (roomId) => {
+  if (!roomId) {
+    return;
+  }
+  const index = state.rooms.findIndex((room) => room.id === roomId);
+  if (index === -1) {
+    return;
+  }
+  state.rooms.splice(index, 1);
+  syncStorage();
+  renderRooms();
 };
 
 const checkBankrupt = (player) => {
@@ -482,6 +521,10 @@ const finalizeGameIfNeeded = () => {
     }
     if (rollDiceButton) {
       rollDiceButton.disabled = true;
+    }
+    if (gameState.roomId) {
+      closeRoomById(gameState.roomId);
+      gameState.roomId = null;
     }
     return true;
   }
@@ -585,6 +628,9 @@ const openGameOverlay = (context = {}) => {
 const closeGameOverlay = () => {
   if (!gameOverlay) {
     return;
+  }
+  if (gameState?.roomId) {
+    closeRoomById(gameState.roomId);
   }
   gameOverlay.classList.remove('active');
   gameOverlay.setAttribute('aria-hidden', 'true');
@@ -823,6 +869,10 @@ if (quickJoin) {
 
 if (exitGame) {
   exitGame.addEventListener('click', closeGameOverlay);
+}
+
+if (surrenderButton) {
+  surrenderButton.addEventListener('click', handleSurrender);
 }
 
 if (openHelp) {
