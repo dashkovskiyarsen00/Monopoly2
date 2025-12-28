@@ -417,7 +417,7 @@ const handleLogin = (event) => {
       entry.password === password,
   );
   if (!user) {
-    showNotification('Неверный логин или пароль.');
+    showNotification('Логин или пароль неверны.');
     return;
   }
   setCurrentUser(user);
@@ -435,11 +435,14 @@ const handleRegister = (event) => {
     showNotification('Заполните все поля.');
     return;
   }
-  const exists = state.users.some(
-    (user) => user.name.toLowerCase() === name.toLowerCase() || user.email === email,
-  );
-  if (exists) {
-    showNotification('Пользователь с таким именем или email уже существует.');
+  const nameTaken = state.users.some((user) => user.name.toLowerCase() === name.toLowerCase());
+  if (nameTaken) {
+    showNotification('Логин занят.');
+    return;
+  }
+  const emailTaken = state.users.some((user) => user.email === email);
+  if (emailTaken) {
+    showNotification('Email занят.');
     return;
   }
   const newUser = {
