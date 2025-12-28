@@ -417,7 +417,7 @@ const handleLogin = (event) => {
       entry.password === password,
   );
   if (!user) {
-    showNotification('Логин или пароль неверны.');
+    showNotification('Неверный логин или пароль');
     return;
   }
   setCurrentUser(user);
@@ -437,12 +437,12 @@ const handleRegister = (event) => {
   }
   const nameTaken = state.users.some((user) => user.name.toLowerCase() === name.toLowerCase());
   if (nameTaken) {
-    showNotification('Логин занят.');
+    showNotification('Логин уже занят');
     return;
   }
   const emailTaken = state.users.some((user) => user.email === email);
   if (emailTaken) {
-    showNotification('Email занят.');
+    showNotification('Email уже занят.');
     return;
   }
   const newUser = {
