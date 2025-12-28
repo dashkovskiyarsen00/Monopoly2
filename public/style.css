@@ -715,6 +715,34 @@ button {
   line-height: 1.2;
 }
 
+.tile-label--brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile.brand-tile .tile-label {
+  font-size: 16px;
+}
+
+.brand-logo {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.brand-logo.brand-casio {
+  color: #1f5aa6;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.brand-logo.brand-invicta {
+  color: #d6a440;
+  font-family: "Georgia", "Times New Roman", serif;
+  letter-spacing: 2px;
+}
+
 .tile.active-turn {
   outline: 2px solid rgba(91, 211, 141, 0.75);
   box-shadow: 0 0 18px rgba(91, 211, 141, 0.35);
@@ -820,6 +848,32 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 13px;
   color: var(--muted);
+}
+
+.center-card.brand-group {
+  --group-color: #34d399;
+  display: grid;
+  gap: 8px;
+}
+
+.game-overlay.theme-classic .center-card.brand-group {
+  --group-color: #2f855a;
+}
+
+.brand-group-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.brand-swatch {
+  width: 22px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--group-color);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--group-color) 60%, transparent);
 }
 
 .center-card.match-events {

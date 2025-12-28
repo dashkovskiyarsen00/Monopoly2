@@ -200,6 +200,12 @@ const prepareBoardTiles = () => {
   }
   boardTiles.forEach((tile) => {
     const label = tile.textContent.trim();
+    const brand = tile.dataset.brand;
+    if (brand) {
+      const brandText = tile.dataset.brandText || label;
+      tile.innerHTML = `<span class="tile-label tile-label--brand"><span class="brand-logo brand-${brand}">${brandText}</span></span><div class="tile-tokens"></div>`;
+      return;
+    }
     tile.innerHTML = `<span class="tile-label">${label}</span><div class="tile-tokens"></div>`;
   });
 };
