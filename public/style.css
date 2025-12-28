@@ -744,9 +744,10 @@ button {
 }
 
 .brand-logo.brand-casio {
-  color: #1f5aa6;
-  font-weight: 800;
-  letter-spacing: 1.4px;
+  display: block;
+  max-width: 100%;
+  width: 72px;
+  height: auto;
 }
 
 .brand-logo.brand-invicta {
@@ -760,6 +761,23 @@ button {
 }
 
 .tile.edge-bottom .brand-logo.brand-invicta {
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
+.brand-logo.brand-zara,
+.brand-logo.brand-hm,
+.brand-logo.brand-primark {
+  display: block;
+  max-width: 100%;
+  width: 70px;
+  height: auto;
+}
+
+.tile.edge-bottom .brand-logo.brand-casio,
+.tile.edge-bottom .brand-logo.brand-zara,
+.tile.edge-bottom .brand-logo.brand-hm,
+.tile.edge-bottom .brand-logo.brand-primark {
   transform: rotate(90deg);
   transform-origin: center;
 }
