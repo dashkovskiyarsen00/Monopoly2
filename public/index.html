@@ -1,1 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monopoly Dota Arena</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo">M</span>
+        <div>
+          <h1>Monopoly Arena</h1>
+          <p>Dota 2 стиль</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-tab="lobby">Игры</button>
+        <button class="nav-item" data-tab="inventory">Инвентарь</button>
+        <button class="nav-item" data-tab="search">Поиск игрока</button>
+        <button class="nav-item" data-tab="profile">Профиль</button>
+        <button class="nav-item" data-tab="settings">Настройки</button>
+        <button class="nav-item" data-tab="store">Магазин</button>
+        <button class="nav-item" data-tab="rules">Правила</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="secondary">Сменить аккаунт</button>
+      </div>
+    </aside>
 
+    <main class="content">
+      <header class="topbar">
+        <div class="status">
+          <span class="dot"></span>
+          <span>Онлайн: 1245 игроков</span>
+        </div>
+        <div class="actions">
+          <button class="ghost">Помощь</button>
+          <button class="primary" id="open-game">Создать игру</button>
+        </div>
+      </header>
+
+      <section class="tab-panel active" id="tab-lobby">
+        <div class="panel-header">
+          <h2>Лобби и матчи</h2>
+          <p>Создавайте комнаты, присоединяйтесь к матчам и наблюдайте за текущими играми.</p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <h3>Быстрое подключение</h3>
+            <p>Подберите игру с равным рейтингом и готовыми правилами.</p>
+            <button class="primary" id="quick-join">Найти матч</button>
+          </div>
+          <div class="card">
+            <h3>Создать комнату</h3>
+            <p>Настройте количество игроков, тип карты и пригласите друзей.</p>
+            <button class="secondary" id="create-room">Создать</button>
+          </div>
+          <div class="card">
+            <h3>Текущие комнаты</h3>
+            <ul class="room-list">
+              <li>
+                <div>
+                  <strong>Dark Bazaar</strong>
+                  <span>2/4 игроков · ставка 200</span>
+                </div>
+                <button class="ghost join-room">Войти</button>
+              </li>
+              <li>
+                <div>
+                  <strong>Radiant Fortune</strong>
+                  <span>3/6 игроков · ставка 500</span>
+                </div>
+                <button class="ghost join-room">Войти</button>
+              </li>
+              <li>
+                <div>
+                  <strong>Dire Prime</strong>
+                  <span>4/4 игроков · ставка 1000</span>
+                </div>
+                <button class="ghost join-room">Войти</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-inventory">
+        <div class="panel-header">
+          <h2>Инвентарь</h2>
+          <p>Ваши фишки, кубики, эффекты побед и редкие скины.</p>
+        </div>
+        <div class="inventory-grid">
+          <div class="inventory-item">
+            <span class="item-title">Фишка: Страж Света</span>
+            <span class="rarity">Эпический</span>
+          </div>
+          <div class="inventory-item">
+            <span class="item-title">Кубики: Руна скорости</span>
+            <span class="rarity">Редкий</span>
+          </div>
+          <div class="inventory-item">
+            <span class="item-title">Эффект: Dark Rift</span>
+            <span class="rarity">Легендарный</span>
+          </div>
+          <div class="inventory-item">
+            <span class="item-title">Баннер: Dire Sigil</span>
+            <span class="rarity">Обычный</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-search">
+        <div class="panel-header">
+          <h2>Поиск игрока</h2>
+          <p>Ищите друзей и соперников для дуэлей и клановых матчей.</p>
+        </div>
+        <div class="search-box">
+          <input type="text" placeholder="Введите ник или ID" />
+          <button class="primary">Найти</button>
+        </div>
+        <div class="search-results">
+          <div class="result-card">
+            <span>NightStalker_77</span>
+            <button class="ghost">Добавить</button>
+          </div>
+          <div class="result-card">
+            <span>RadiantQueen</span>
+            <button class="ghost">Добавить</button>
+          </div>
+          <div class="result-card">
+            <span>DireOracle</span>
+            <button class="ghost">Добавить</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-profile">
+        <div class="panel-header">
+          <h2>Профиль</h2>
+          <p>Ваш статус, достижения и статистика по матчам.</p>
+        </div>
+        <div class="profile-grid">
+          <div class="profile-card">
+            <h3>Профиль игрока</h3>
+            <p><strong>Ник:</strong> ShadowBroker</p>
+            <p><strong>Ранг:</strong> Архонт</p>
+            <p><strong>Клан:</strong> D2 Monopoly Guild</p>
+            <button class="secondary">Редактировать</button>
+          </div>
+          <div class="profile-card stats">
+            <h3>Статистика</h3>
+            <div class="stat-row">
+              <span>Победы</span>
+              <strong>128</strong>
+            </div>
+            <div class="stat-row">
+              <span>Поражения</span>
+              <strong>64</strong>
+            </div>
+            <div class="stat-row">
+              <span>Средний доход</span>
+              <strong>2 450</strong>
+            </div>
+            <div class="stat-row">
+              <span>Рейтинг</span>
+              <strong>3 920</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-settings">
+        <div class="panel-header">
+          <h2>Настройки</h2>
+          <p>Звук, графика и управление матчами.</p>
+        </div>
+        <div class="settings-list">
+          <label class="setting-item">
+            <span>Громкость эффектов</span>
+            <input type="range" value="70" />
+          </label>
+          <label class="setting-item">
+            <span>Музыка</span>
+            <input type="range" value="45" />
+          </label>
+          <label class="setting-item">
+            <span>Уведомления</span>
+            <input type="checkbox" checked />
+          </label>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-store">
+        <div class="panel-header">
+          <h2>Магазин</h2>
+          <p>Новые фишки, тематические наборы и эффекты в стиле Dota 2.</p>
+        </div>
+        <div class="store-grid">
+          <div class="store-card">
+            <h3>Набор "Radiant Glory"</h3>
+            <p>Фишки, кубики и поле в светлом стиле.</p>
+            <button class="primary">Купить за 1200</button>
+          </div>
+          <div class="store-card">
+            <h3>Набор "Dire Dominion"</h3>
+            <p>Темные эффекты, редкий баннер и уникальный чат.</p>
+            <button class="secondary">Купить за 1800</button>
+          </div>
+          <div class="store-card">
+            <h3>Фишка "Invoker"</h3>
+            <p>Легендарная анимация и эффект победы.</p>
+            <button class="ghost">Купить за 900</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-rules">
+        <div class="panel-header">
+          <h2>Правила Monopoly</h2>
+          <p>Стандартные правила как в классической версии monopoly-one.</p>
+        </div>
+        <ol class="rules-list">
+          <li>Игроки по очереди бросают кубики и перемещают фишку по полю.</li>
+          <li>Если игрок попадает на свободную клетку собственности, он может ее купить.</li>
+          <li>Если клетка занята другим игроком, оплачивается аренда согласно уровню улучшений.</li>
+          <li>За полный набор цвета можно строить дома и отели, увеличивая доход.</li>
+          <li>Посадка в тюрьму происходит по стандартным правилам, выход — по дублям или оплате.</li>
+          <li>Побеждает игрок, оставшийся с наибольшим капиталом, когда остальные банкроты.</li>
+        </ol>
+      </section>
+
+      <section class="game-overlay" id="game-overlay" aria-hidden="true">
+        <div class="game-header">
+          <button class="ghost" id="exit-game">Выйти из игры</button>
+          <div class="game-title">
+            <span class="glow"></span>
+            <h2>Матч: Dire Prime</h2>
+          </div>
+          <div class="game-meta">
+            <span>Раунд 4 · Ход игрока: ShadowBroker</span>
+          </div>
+        </div>
+        <div class="game-layout">
+          <aside class="players-panel">
+            <h3>Игроки</h3>
+            <ul>
+              <li class="active">ShadowBroker · 2 400</li>
+              <li>RadiantQueen · 1 980</li>
+              <li>DireOracle · 3 120</li>
+              <li>NightStalker_77 · 1 300</li>
+            </ul>
+            <div class="dice-panel">
+              <div class="dice">4</div>
+              <div class="dice">3</div>
+              <button class="primary">Бросить кубики</button>
+            </div>
+          </aside>
+
+          <div class="board-wrapper">
+            <div class="board">
+              <div class="tile corner start" style="grid-row: 10; grid-column: 10;">Старт</div>
+              <div class="tile property" style="grid-row: 10; grid-column: 9;">Лесной путь</div>
+              <div class="tile chance" style="grid-row: 10; grid-column: 8;">Руна</div>
+              <div class="tile property" style="grid-row: 10; grid-column: 7;">Храм Света</div>
+              <div class="tile tax" style="grid-row: 10; grid-column: 6;">Дань</div>
+              <div class="tile transport" style="grid-row: 10; grid-column: 5;">Портал</div>
+              <div class="tile property" style="grid-row: 10; grid-column: 4;">Алтарь</div>
+              <div class="tile chance" style="grid-row: 10; grid-column: 3;">Руна</div>
+              <div class="tile property" style="grid-row: 10; grid-column: 2;">Башня</div>
+              <div class="tile corner jail" style="grid-row: 10; grid-column: 1;">Тюрьма</div>
+
+              <div class="tile property" style="grid-row: 9; grid-column: 10;">Тёмный рынок</div>
+              <div class="tile chance" style="grid-row: 8; grid-column: 10;">Руна</div>
+              <div class="tile property" style="grid-row: 7; grid-column: 10;">Гробница</div>
+              <div class="tile utility" style="grid-row: 6; grid-column: 10;">Фонтан</div>
+              <div class="tile property" style="grid-row: 5; grid-column: 10;">Крипта</div>
+              <div class="tile property" style="grid-row: 4; grid-column: 10;">Арена</div>
+              <div class="tile chance" style="grid-row: 3; grid-column: 10;">Руна</div>
+              <div class="tile property" style="grid-row: 2; grid-column: 10;">Святилище</div>
+
+              <div class="tile corner free" style="grid-row: 1; grid-column: 10;">Привал</div>
+              <div class="tile property" style="grid-row: 1; grid-column: 9;">Казарма</div>
+              <div class="tile chance" style="grid-row: 1; grid-column: 8;">Руна</div>
+              <div class="tile property" style="grid-row: 1; grid-column: 7;">Башня Dire</div>
+              <div class="tile tax" style="grid-row: 1; grid-column: 6;">Штраф</div>
+              <div class="tile transport" style="grid-row: 1; grid-column: 5;">Корабль</div>
+              <div class="tile property" style="grid-row: 1; grid-column: 4;">Роща</div>
+              <div class="tile chance" style="grid-row: 1; grid-column: 3;">Руна</div>
+              <div class="tile property" style="grid-row: 1; grid-column: 2;">Святилище Radiant</div>
+              <div class="tile corner go-jail" style="grid-row: 1; grid-column: 1;">В тюрьму</div>
+
+              <div class="tile property" style="grid-row: 2; grid-column: 1;">Логово</div>
+              <div class="tile chance" style="grid-row: 3; grid-column: 1;">Руна</div>
+              <div class="tile property" style="grid-row: 4; grid-column: 1;">Гримуар</div>
+              <div class="tile utility" style="grid-row: 5; grid-column: 1;">Аукцион</div>
+              <div class="tile property" style="grid-row: 6; grid-column: 1;">Цитадель</div>
+              <div class="tile property" style="grid-row: 7; grid-column: 1;">Порт</div>
+              <div class="tile chance" style="grid-row: 8; grid-column: 1;">Руна</div>
+              <div class="tile property" style="grid-row: 9; grid-column: 1;">Арсенал</div>
+
+              <div class="board-center">
+                <div class="center-card">
+                  <h3>Monopoly Arena</h3>
+                  <p>Режим: Dota 2 · Турнирная карта</p>
+                </div>
+                <div class="center-card">
+                  <h4>События матча</h4>
+                  <ul>
+                    <li>RadiantQueen купил "Алтарь"</li>
+                    <li>DireOracle активировал руну скорости</li>
+                    <li>ShadowBroker получил бонус 500</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="chat-panel">
+            <h3>Чат</h3>
+            <div class="chat-messages">
+              <p><strong>ShadowBroker:</strong> Удачи всем!</p>
+              <p><strong>RadiantQueen:</strong> Кто первый доходит до башни — тот топ.</p>
+              <p><strong>DireOracle:</strong> Руна богатства в действии.</p>
+            </div>
+            <div class="chat-input">
+              <input type="text" placeholder="Введите сообщение" />
+              <button class="primary">Отправить</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
