@@ -764,7 +764,7 @@ button {
   letter-spacing: 2px;
   display: block;
   max-width: 100%;
-  width: 72px;
+  width: 96px;
   height: auto;
 }
 
@@ -778,7 +778,7 @@ button {
 .brand-logo.brand-primark {
   display: block;
   max-width: 100%;
-  width: 70px;
+  width: 94px;
   height: auto;
 }
 
@@ -790,7 +790,7 @@ button {
 .brand-logo.brand-sony {
   display: block;
   max-width: 95%;
-  width: 88px;
+  width: 112px;
   height: auto;
 }
 
