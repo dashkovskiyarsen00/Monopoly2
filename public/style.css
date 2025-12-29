@@ -748,6 +748,7 @@ button {
   max-width: 100%;
   width: 72px;
   height: auto;
+  mix-blend-mode: multiply;
 }
 
 .brand-logo.brand-invicta {
@@ -772,6 +773,10 @@ button {
   max-width: 100%;
   width: 70px;
   height: auto;
+}
+
+.brand-logo.brand-hm {
+  mix-blend-mode: multiply;
 }
 
 .tile.edge-bottom .brand-logo.brand-casio,
