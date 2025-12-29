@@ -786,6 +786,14 @@ button {
   mix-blend-mode: multiply;
 }
 
+.brand-logo.brand-remington,
+.brand-logo.brand-sony {
+  display: block;
+  max-width: 95%;
+  width: 88px;
+  height: auto;
+}
+
 .tile.edge-bottom .brand-logo.brand-casio,
 .tile.edge-bottom .brand-logo.brand-zara,
 .tile.edge-bottom .brand-logo.brand-hm,
