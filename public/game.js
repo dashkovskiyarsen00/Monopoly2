@@ -201,6 +201,12 @@ const BRAND_LOGOS = {
   zara: { src: 'zara-logo.png', alt: 'ZARA' },
   hm: { src: 'logo-hm.png', alt: 'H&M' },
   primark: { src: 'primark-logo.png', alt: 'PRIMARK' },
+  remington: { src: 'remington-logo.png', alt: 'REMINGTON' },
+  philips: { src: 'philips-logo.png', alt: 'PHILIPS' },
+  dyson: { src: 'dyson-logo.png', alt: 'DYSON' },
+  marshall: { src: 'Marshall_logo.png', alt: 'MARSHALL' },
+  jbl: { src: 'jbl-logo.png', alt: 'JBL' },
+  sony: { src: 'sony-logo.png', alt: 'SONY' },
 };
 
 const prepareBoardTiles = (theme = 'dota') => {
