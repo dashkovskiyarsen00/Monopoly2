@@ -161,6 +161,7 @@ const setBoardTheme = (theme) => {
   const normalized = theme === 'classic' ? 'classic' : 'dota';
   gameOverlay.classList.remove(...BOARD_THEME_CLASSES);
   gameOverlay.classList.add(normalized === 'classic' ? 'theme-classic' : 'theme-dota');
+  prepareBoardTiles(normalized);
 };
 
 const updateOnlineCount = () => {
@@ -202,23 +203,46 @@ const BRAND_LOGOS = {
   primark: { src: 'primark-logo.png', alt: 'PRIMARK' },
 };
 
-const prepareBoardTiles = () => {
+const prepareBoardTiles = (theme = 'dota') => {
   if (!boardTiles.length) {
     return;
   }
   boardTiles.forEach((tile) => {
-    const label = tile.textContent.trim();
     const brand = tile.dataset.brand;
-    if (brand) {
-      const brandText = tile.dataset.brandText || label;
-      const brandLogo = BRAND_LOGOS[brand];
-      const brandLogoMarkup = brandLogo
-        ? `<img class="brand-logo brand-${brand}" src="${brandLogo.src}" alt="${brandLogo.alt}">`
-        : `<span class="brand-logo brand-${brand}">${brandText}</span>`;
-      tile.innerHTML = `<span class="tile-label tile-label--brand">${brandLogoMarkup}</span><div class="tile-tokens"></div>`;
-      return;
+    const existingLabel = tile.dataset.label || tile.textContent.trim();
+    if (!tile.dataset.label) {
+      const fallbackLabel = brand
+        ? BRAND_LOGOS[brand]?.alt || brand.toUpperCase()
+        : '';
+      tile.dataset.label = existingLabel || tile.dataset.brandText || fallbackLabel;
     }
-    tile.innerHTML = `<span class="tile-label">${label}</span><div class="tile-tokens"></div>`;
+    const labelText = tile.dataset.label;
+    const brandText = tile.dataset.brandText || labelText;
+    const tokenContainer = tile.querySelector('.tile-tokens') || document.createElement('div');
+    tokenContainer.className = 'tile-tokens';
+
+    const label = document.createElement('span');
+    const isClassic = theme === 'classic';
+    if (brand && isClassic) {
+      const brandLogo = BRAND_LOGOS[brand];
+      if (brandLogo) {
+        label.className = 'tile-label tile-label--brand';
+        const logo = document.createElement('img');
+        logo.className = `brand-logo brand-${brand}`;
+        logo.src = brandLogo.src;
+        logo.alt = brandLogo.alt;
+        label.appendChild(logo);
+      } else {
+        label.className = 'tile-label tile-label--brand';
+        label.textContent = brandText;
+      }
+    } else {
+      label.className = brand ? 'tile-label tile-label--brand' : 'tile-label';
+      label.textContent = brandText || labelText;
+    }
+
+    tile.textContent = '';
+    tile.append(label, tokenContainer);
   });
 };
 
