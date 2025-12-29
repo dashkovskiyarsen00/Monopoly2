@@ -398,7 +398,7 @@ button {
   backdrop-filter: blur(6px);
   display: none;
   flex-direction: column;
-  padding: 12px 16px 16px;
+  padding: 8px;
   z-index: 20;
 }
 
@@ -456,8 +456,8 @@ button {
 .game-layout {
   flex: 1;
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr) 260px;
-  gap: 10px;
+  grid-template-columns: 210px minmax(0, 1fr) 280px;
+  gap: 12px;
   min-height: 0;
 }
 
@@ -562,15 +562,15 @@ button {
 }
 
 .board {
-  width: min(100%, calc(100vh - 24px));
-  height: min(100%, calc(100vh - 24px));
+  width: min(100%, calc(100vh - 10px));
+  height: min(100%, calc(100vh - 10px));
   aspect-ratio: 1 / 1;
   background: #101319;
   border-radius: 22px;
   border: 2px solid rgba(91, 211, 141, 0.4);
   display: grid;
-  grid-template-columns: 1.55fr repeat(9, 1fr) 1.55fr;
-  grid-template-rows: 1.55fr repeat(9, 1fr) 1.55fr;
+  grid-template-columns: 1.6fr repeat(9, 1fr) 1.6fr;
+  grid-template-rows: 1.6fr repeat(9, 1fr) 1.6fr;
   gap: 6px;
   padding: 10px;
   position: relative;
@@ -586,7 +586,7 @@ button {
 .tile {
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 18px 12px;
+  padding: 10px; 
   font-size: 14px;
   text-transform: uppercase;
   display: flex;
@@ -601,6 +601,12 @@ button {
   box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.35);
 }
 
+/* ОТСТУПЫ КАРТОЧЕК ДЛЯ ЗАЩИТЫ ЛОГОТИПОВ */
+.tile.edge-bottom { padding-bottom: 34px !important; }
+.tile.edge-top { padding-top: 34px !important; }
+.tile.edge-left { padding-left: 34px !important; }
+.tile.edge-right { padding-right: 34px !important; }
+
 .game-overlay.theme-classic .tile {
   background: #fcfaf2;
   border-color: rgba(43, 108, 176, 0.3);
@@ -608,112 +614,63 @@ button {
   color: #1f2933;
 }
 
+/* ЦЕНЫ НА ПОЛОСКАХ */
+.tile.color-band::before {
+  content: var(--price, "$200");
+  position: absolute;
+  z-index: 5;
+  font-size: 11px;
+  font-weight: 900;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .tile.color-band::after {
   content: "";
   position: absolute;
   background: var(--monopoly-color, transparent);
   pointer-events: none;
+  z-index: 1;
 }
 
+/* ИСПРАВЛЕНИЕ ПОВОРОТА: ЦЕНЫ ЧИТАЮТСЯ ХОРОШО */
 .tile.edge-bottom::after {
-  left: -2px;
-  right: -2px;
-  bottom: -7px;
-  height: 12px;
-  border-radius: 0 0 14px 14px;
+  left: -2px; right: -2px; bottom: -2px;
+  height: 26px; border-radius: 0 0 14px 14px;
 }
+.tile.edge-bottom::before { bottom: 0; left: 0; right: 0; height: 26px; transform: none; } /* Снизу прямо */
 
 .tile.edge-top::after {
-  left: -2px;
-  right: -2px;
-  top: -7px;
-  height: 12px;
-  border-radius: 14px 14px 0 0;
+  left: -2px; right: -2px; top: -2px;
+  height: 26px; border-radius: 14px 14px 0 0;
 }
+.tile.edge-top::before { top: 0; left: 0; right: 0; height: 26px; transform: rotate(180deg); } /* Сверху 180° */
 
 .tile.edge-left::after {
-  top: -2px;
-  bottom: -2px;
-  left: -7px;
-  width: 12px;
-  border-radius: 14px 0 0 14px;
+  top: -2px; bottom: -2px; left: -2px;
+  width: 26px; border-radius: 14px 0 0 14px;
 }
+.tile.edge-left::before { left: 0; top: 0; bottom: 0; width: 26px; transform: rotate(180deg); } /* Слева 180° */
 
 .tile.edge-right::after {
-  top: -2px;
-  bottom: -2px;
-  right: -7px;
-  width: 12px;
-  border-radius: 0 14px 14px 0;
+  top: -2px; bottom: -2px; right: -2px;
+  width: 26px; border-radius: 0 14px 14px 0;
 }
+.tile.edge-right::before { right: 0; top: 0; bottom: 0; width: 26px; transform: rotate(180deg); } /* Справа 180° */
 
-.tile.color-green {
-  --monopoly-color: #34d399;
-}
+/* РАНДОМНЫЕ ЦЕНЫ ПО ЦВЕТАМ */
+.tile.color-green { --monopoly-color: #34d399; --price: "$350"; }
+.tile.color-blue { --monopoly-color: #60a5fa; --price: "$140"; }
+.tile.color-orange { --monopoly-color: #f59e0b; --price: "$220"; }
+.tile.color-purple { --monopoly-color: #a855f7; --price: "$180"; }
+.tile.color-teal { --monopoly-color: #2dd4bf; --price: "$280"; }
+.tile.color-pink { --monopoly-color: #f472b6; --price: "$260"; }
+.tile.color-yellow { --monopoly-color: #facc15; --price: "$300"; }
+.tile.color-red { --monopoly-color: #f87171; --price: "$400"; }
 
-.tile.color-blue {
-  --monopoly-color: #60a5fa;
-}
-
-.tile.color-orange {
-  --monopoly-color: #f59e0b;
-}
-
-.tile.color-purple {
-  --monopoly-color: #a855f7;
-}
-
-.tile.color-teal {
-  --monopoly-color: #2dd4bf;
-}
-
-.tile.color-pink {
-  --monopoly-color: #f472b6;
-}
-
-.tile.color-yellow {
-  --monopoly-color: #facc15;
-}
-
-.tile.color-red {
-  --monopoly-color: #f87171;
-}
-
-.game-overlay.theme-classic .tile.color-green {
-  --monopoly-color: #2f855a;
-}
-
-.game-overlay.theme-classic .tile.color-blue {
-  --monopoly-color: #2b6cb0;
-}
-
-.game-overlay.theme-classic .tile.color-orange {
-  --monopoly-color: #dd6b20;
-}
-
-.game-overlay.theme-classic .tile.color-purple {
-  --monopoly-color: #805ad5;
-}
-
-.game-overlay.theme-classic .tile.color-teal {
-  --monopoly-color: #63b3ed;
-}
-
-.game-overlay.theme-classic .tile.color-pink {
-  --monopoly-color: #ed64a6;
-}
-
-.game-overlay.theme-classic .tile.color-yellow {
-  --monopoly-color: #ecc94b;
-}
-
-.game-overlay.theme-classic .tile.color-red {
-  --monopoly-color: #e53e3e;
-}
-
-.tile-label {
-  line-height: 1.2;
-}
+.tile-label { line-height: 1.2; }
 
 .tile-label--brand {
   display: flex;
@@ -723,12 +680,12 @@ button {
   height: 100%;
 }
 
-.tile.brand-tile .tile-label {
-  font-size: 16px;
-}
+.tile.brand-tile .tile-label { font-size: 16px; }
 
-.tile.edge-bottom.brand-tile {
-  letter-spacing: 2px;
+/* ПОВОРОТ ЛОГОТИПОВ СНИЗУ */
+.tile.edge-bottom .brand-logo {
+  transform: rotate(90deg);
+  max-width: 155% !important;
 }
 
 .tile.edge-bottom.brand-tile .tile-label {
@@ -736,71 +693,19 @@ button {
   transform: rotate(180deg);
 }
 
+/* РАЗМЕР ЛОГОТИПОВ */
 .brand-logo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  max-width: 80%;
-  max-height: 80%;
-  width: 72px;
+  display: block;
+  max-width: 98%;
+  max-height: 98%;
+  width: auto;
   height: auto;
   object-fit: contain;
 }
 
-.brand-logo.brand-casio {
-  display: block;
-  max-width: 100%;
-  width: 72px;
-  height: auto;
-  mix-blend-mode: multiply;
-}
-
-.brand-logo.brand-invicta {
-  color: #d6a440;
-  font-family: "Georgia", "Times New Roman", serif;
-  letter-spacing: 2px;
-  display: block;
-  max-width: 100%;
-  width: 96px;
-  height: auto;
-}
-
-.tile.edge-bottom .brand-logo.brand-invicta {
-  transform: rotate(90deg);
-  transform-origin: center;
-}
-
-.brand-logo.brand-zara,
-.brand-logo.brand-hm,
-.brand-logo.brand-primark {
-  display: block;
-  max-width: 100%;
-  width: 94px;
-  height: auto;
-}
-
-.brand-logo.brand-hm {
-  mix-blend-mode: multiply;
-}
-
-.brand-logo.brand-remington,
-.brand-logo.brand-sony {
-  display: block;
-  max-width: 95%;
-  width: 112px;
-  height: auto;
-}
-
-.tile.edge-bottom .brand-logo.brand-casio,
-.tile.edge-bottom .brand-logo.brand-zara,
-.tile.edge-bottom .brand-logo.brand-hm,
-.tile.edge-bottom .brand-logo.brand-primark {
-  transform: rotate(90deg);
-  transform-origin: center;
-}
+.brand-logo.brand-casio { display: block; mix-blend-mode: multiply; }
+.brand-logo.brand-invicta { color: #d6a440; letter-spacing: 2px; }
+.brand-logo.brand-hm { mix-blend-mode: multiply; }
 
 .tile.active-turn {
   outline: 2px solid rgba(91, 211, 141, 0.75);
@@ -820,6 +725,7 @@ button {
   flex-wrap: wrap;
   gap: 4px;
   justify-content: flex-end;
+  z-index: 10;
 }
 
 .player-token {
@@ -883,11 +789,7 @@ button {
 .board-center {
   position: absolute;
   inset: 14% 14%;
-  background: linear-gradient(180deg, rgba(13, 15, 18, 0.65), rgba(13, 15, 18, 0.9)),
-    url("center-field.png");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background: linear-gradient(180deg, rgba(13, 15, 18, 0.65), rgba(13, 15, 18, 0.9));
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   display: grid;
@@ -1085,43 +987,23 @@ button {
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes diceRoll {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  50% {
-    transform: rotate(180deg) scale(1.1);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 @keyframes tokenPulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.25);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
 }
 
 @media (max-width: 1200px) {
-  .game-layout {
-    grid-template-columns: 180px 1fr 230px;
-  }
-
+  .game-layout { grid-template-columns: 180px 1fr 230px; }
   .board {
     width: min(100%, calc(100vh - 90px));
     height: min(100%, calc(100vh - 90px));
@@ -1129,25 +1011,9 @@ button {
 }
 
 @media (max-width: 980px) {
-  .app {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .game-layout {
-    grid-template-columns: 1fr;
-  }
-
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+  .game-layout { grid-template-columns: 1fr; }
   .board {
     width: min(96vw, calc(100vh - 140px));
     height: min(96vw, calc(100vh - 140px));
