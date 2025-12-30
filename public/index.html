@@ -13,17 +13,23 @@
         <span class="logo">M</span>
         <div>
           <h1>Monopoly Arena</h1>
-          <p>Dota 2 стиль</p>
+          <p>Dota 2 стиль · ELO-арена</p>
         </div>
       </div>
       <nav class="nav">
-        <button class="nav-item active" data-tab="lobby">Игры</button>
-        <button class="nav-item" data-tab="inventory">Инвентарь</button>
-        <button class="nav-item" data-tab="search">Поиск игрока</button>
+        <button class="nav-item active" data-tab="lobby">Лобби</button>
+        <button class="nav-item" data-tab="quick-search">Быстрый поиск</button>
         <button class="nav-item" data-tab="profile">Профиль</button>
-        <button class="nav-item" data-tab="settings">Настройки</button>
+        <button class="nav-item" data-tab="stats">Статистика</button>
+        <button class="nav-item" data-tab="leaderboard">Рейтинг</button>
         <button class="nav-item" data-tab="store">Магазин</button>
+        <button class="nav-item" data-tab="inventory">Инвентарь</button>
+        <button class="nav-item" data-tab="search">Поиск игроков</button>
+        <button class="nav-item" data-tab="friends">Друзья</button>
+        <button class="nav-item" data-tab="achievements">Достижения</button>
         <button class="nav-item" data-tab="rules">Правила</button>
+        <button class="nav-item" data-tab="settings">Настройки</button>
+        <button class="nav-item" data-tab="clans">Кланы</button>
       </nav>
       <div class="sidebar-footer">
         <button class="secondary" id="switch-account">Сменить аккаунт</button>
@@ -35,6 +41,7 @@
         <div class="status">
           <span class="dot"></span>
           <span>Онлайн: <strong id="online-count">0</strong> игроков</span>
+          <span class="chip" id="global-level">Уровень 1</span>
         </div>
         <div class="actions">
           <button class="ghost" id="open-help">Помощь</button>
@@ -46,17 +53,17 @@
       <section class="tab-panel active" id="tab-lobby">
         <div class="panel-header">
           <h2>Лобби и матчи</h2>
-          <p>Создавайте комнаты, присоединяйтесь к матчам и наблюдайте за текущими играми.</p>
+          <p>Создавайте комнаты, приглашайте друзей, следите за текущими матчами.</p>
         </div>
         <div class="cards">
           <div class="card">
             <h3>Быстрое подключение</h3>
-            <p>Подберите игру с равным рейтингом и готовыми правилами.</p>
+            <p>Автоподбор по рейтингу, матч готов за секунды.</p>
             <button class="primary" id="quick-join" data-game-title="Матч: Быстрый поиск" data-game-mode="Автоматический подбор">Найти матч</button>
           </div>
           <div class="card">
             <h3>Создать комнату</h3>
-            <p>Настройте количество игроков, тип карты и пригласите друзей.</p>
+            <p>Параметры: количество игроков, приватность, ставка, тема поля.</p>
             <button class="secondary" id="create-room" data-game-title="Комната: Настроить матч" data-game-mode="Создание комнаты">Создать</button>
           </div>
           <div class="card">
@@ -67,42 +74,47 @@
         </div>
       </section>
 
-      <section class="tab-panel" id="tab-inventory">
+      <section class="tab-panel" id="tab-quick-search">
         <div class="panel-header">
-          <h2>Инвентарь</h2>
-          <p>Ваши фишки, кубики, эффекты побед и редкие скины.</p>
+          <h2>Быстрый поиск</h2>
+          <p>Система подбирает комнату по ELO, уровню и теме поля.</p>
         </div>
-        <div class="inventory-grid">
-          <div class="inventory-item">
-            <span class="item-title">Фишка: Страж Света</span>
-            <span class="rarity">Эпический</span>
+        <div class="quick-search">
+          <div class="card">
+            <h3>Параметры поиска</h3>
+            <div class="search-options">
+              <label>
+                <span>Предпочитаемая тема</span>
+                <select id="quick-theme">
+                  <option value="dota">Dota 2</option>
+                  <option value="classic">Классическая</option>
+                </select>
+              </label>
+              <label>
+                <span>Режим</span>
+                <select id="quick-mode">
+                  <option value="Классический">Классический</option>
+                  <option value="Турнирный">Турнирный</option>
+                  <option value="Быстрый">Быстрый</option>
+                </select>
+              </label>
+              <label>
+                <span>Диапазон рейтинга</span>
+                <select id="quick-elo">
+                  <option value="auto">Авто</option>
+                  <option value="narrow">±150</option>
+                  <option value="wide">±300</option>
+                </select>
+              </label>
+            </div>
+            <button class="primary" id="quick-search-button">Начать поиск</button>
           </div>
-          <div class="inventory-item">
-            <span class="item-title">Кубики: Руна скорости</span>
-            <span class="rarity">Редкий</span>
-          </div>
-          <div class="inventory-item">
-            <span class="item-title">Эффект: Dark Rift</span>
-            <span class="rarity">Легендарный</span>
-          </div>
-          <div class="inventory-item">
-            <span class="item-title">Баннер: Dire Sigil</span>
-            <span class="rarity">Обычный</span>
+          <div class="card">
+            <h3>Результат</h3>
+            <p id="quick-search-status">Нет активного поиска. Нажмите кнопку выше.</p>
+            <button class="ghost" id="quick-search-stop">Остановить поиск</button>
           </div>
         </div>
-      </section>
-
-      <section class="tab-panel" id="tab-search">
-        <div class="panel-header">
-          <h2>Поиск игрока</h2>
-          <p>Ищите друзей и соперников для дуэлей и клановых матчей.</p>
-        </div>
-        <div class="search-box">
-          <input type="text" id="search-input" placeholder="Введите ник или ID" />
-          <button class="primary" id="search-button">Найти</button>
-        </div>
-        <p class="search-empty" id="search-empty">Ничего не найдено. Попробуйте другой ник.</p>
-        <div class="search-results" id="search-results"></div>
       </section>
 
       <section class="tab-panel" id="tab-profile">
@@ -115,29 +127,145 @@
             <h3>Профиль игрока</h3>
             <p><strong>Ник:</strong> <span id="profile-name">Гость</span></p>
             <p><strong>Ранг:</strong> <span id="profile-rank">Новичок</span></p>
+            <p><strong>Уровень:</strong> <span id="profile-level">1</span></p>
+            <p><strong>ELO:</strong> <span id="profile-elo">1000</span></p>
             <p><strong>Клан:</strong> <span id="profile-clan">Без клана</span></p>
             <button class="secondary" id="edit-profile">Редактировать</button>
           </div>
           <div class="profile-card stats">
-            <h3>Статистика</h3>
+            <h3>Сезонная статистика</h3>
             <div class="stat-row">
               <span>Победы</span>
-              <strong>128</strong>
+              <strong id="profile-wins">0</strong>
             </div>
             <div class="stat-row">
               <span>Поражения</span>
-              <strong>64</strong>
+              <strong id="profile-losses">0</strong>
             </div>
             <div class="stat-row">
               <span>Средний доход</span>
-              <strong>2 450</strong>
+              <strong id="profile-income">0</strong>
             </div>
             <div class="stat-row">
-              <span>Рейтинг</span>
-              <strong>3 920</strong>
+              <span>Серия побед</span>
+              <strong id="profile-streak">0</strong>
             </div>
           </div>
         </div>
+      </section>
+
+      <section class="tab-panel" id="tab-stats">
+        <div class="panel-header">
+          <h2>Глобальная статистика</h2>
+          <p>Сводка по всем матчам, рейтингам и экономике.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Матчи всего</h3>
+            <strong id="global-matches">0</strong>
+          </div>
+          <div class="stat-card">
+            <h3>Средняя длительность</h3>
+            <strong id="global-duration">0 мин</strong>
+          </div>
+          <div class="stat-card">
+            <h3>Экономика</h3>
+            <strong id="global-economy">0</strong>
+          </div>
+          <div class="stat-card">
+            <h3>Активные игроки</h3>
+            <strong id="global-active">0</strong>
+          </div>
+        </div>
+        <div class="history-panel">
+          <h3>История матчей</h3>
+          <ul id="match-history"></ul>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-leaderboard">
+        <div class="panel-header">
+          <h2>Таблица лидеров</h2>
+          <p>Лучшие игроки сезона по ELO и уровню.</p>
+        </div>
+        <div class="leaderboard">
+          <div class="leaderboard-header">
+            <span>Игрок</span>
+            <span>ELO</span>
+            <span>Уровень</span>
+            <span>Победы</span>
+          </div>
+          <div id="leaderboard-list"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-store">
+        <div class="panel-header">
+          <h2>Магазин и кейсы</h2>
+          <p>Кейсы, редкости, скины и эффекты победы.</p>
+        </div>
+        <div class="store-grid">
+          <div class="store-card">
+            <h3>Кейс “Rune Burst”</h3>
+            <p>Шанс получить эпический эффект броска и легендарные кубики.</p>
+            <button class="primary open-case" data-case="Rune Burst" data-price="400">Открыть за 400</button>
+          </div>
+          <div class="store-card">
+            <h3>Кейс “Dire Echo”</h3>
+            <p>Редкие скины поля и фишек, дополнительный глоу.</p>
+            <button class="secondary open-case" data-case="Dire Echo" data-price="650">Открыть за 650</button>
+          </div>
+          <div class="store-card">
+            <h3>Набор “Radiant Glory”</h3>
+            <p>Фишки, кубики и поле в светлом стиле.</p>
+            <button class="ghost buy-button" data-item="Набор &quot;Radiant Glory&quot;">Купить за 1200</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-inventory">
+        <div class="panel-header">
+          <h2>Инвентарь</h2>
+          <p>Ваши фишки, кубики, эффекты побед и редкие скины.</p>
+        </div>
+        <div class="inventory-grid" id="inventory-grid"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-search">
+        <div class="panel-header">
+          <h2>Поиск игроков</h2>
+          <p>Ищите друзей и соперников для дуэлей и клановых матчей.</p>
+        </div>
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Введите ник или ID" />
+          <button class="primary" id="search-button">Найти</button>
+        </div>
+        <p class="search-empty" id="search-empty">Ничего не найдено. Попробуйте другой ник.</p>
+        <div class="search-results" id="search-results"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-friends">
+        <div class="panel-header">
+          <h2>Друзья</h2>
+          <p>Управляйте списком друзей и приглашайте в матч.</p>
+        </div>
+        <ul class="friends-list" id="friends-list"></ul>
+      </section>
+
+      <section class="tab-panel" id="tab-achievements">
+        <div class="panel-header">
+          <h2>Достижения</h2>
+          <p>Открывайте редкие награды за победы и коллекции.</p>
+        </div>
+        <div class="achievements-grid" id="achievements-grid"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-rules">
+        <div class="panel-header">
+          <h2>Правила Monopoly Arena</h2>
+          <p>Полный набор правил, торговли и событий.</p>
+        </div>
+        <ol class="rules-list" id="rules-list"></ol>
       </section>
 
       <section class="tab-panel" id="tab-settings">
@@ -158,46 +286,36 @@
             <span>Уведомления</span>
             <input type="checkbox" checked data-setting="Уведомления" />
           </label>
+          <label class="setting-item">
+            <span>Скорость анимации поля</span>
+            <input type="range" value="55" data-setting="Скорость анимации поля" />
+          </label>
+          <label class="setting-item">
+            <span>Тема интерфейса</span>
+            <select data-setting="Тема интерфейса">
+              <option value="neon">Неоновая</option>
+              <option value="classic">Классическая</option>
+            </select>
+          </label>
         </div>
       </section>
 
-      <section class="tab-panel" id="tab-store">
+      <section class="tab-panel" id="tab-clans">
         <div class="panel-header">
-          <h2>Магазин</h2>
-          <p>Новые фишки, тематические наборы и эффекты в стиле Dota 2.</p>
+          <h2>Кланы</h2>
+          <p>Создайте или присоединитесь к клану для совместных матчей.</p>
         </div>
-        <div class="store-grid">
-          <div class="store-card">
-            <h3>Набор "Radiant Glory"</h3>
-            <p>Фишки, кубики и поле в светлом стиле.</p>
-            <button class="primary buy-button" data-item="Набор &quot;Radiant Glory&quot;">Купить за 1200</button>
+        <div class="clans-grid">
+          <div class="card">
+            <h3>Ваш клан</h3>
+            <p id="clan-status">Вы пока без клана.</p>
+            <button class="secondary" id="create-clan">Создать клан</button>
           </div>
-          <div class="store-card">
-            <h3>Набор "Dire Dominion"</h3>
-            <p>Темные эффекты, редкий баннер и уникальный чат.</p>
-            <button class="secondary buy-button" data-item="Набор &quot;Dire Dominion&quot;">Купить за 1800</button>
-          </div>
-          <div class="store-card">
-            <h3>Фишка "Invoker"</h3>
-            <p>Легендарная анимация и эффект победы.</p>
-            <button class="ghost buy-button" data-item="Фишка &quot;Invoker&quot;">Купить за 900</button>
+          <div class="card">
+            <h3>Рекомендованные кланы</h3>
+            <ul id="clan-list"></ul>
           </div>
         </div>
-      </section>
-
-      <section class="tab-panel" id="tab-rules">
-        <div class="panel-header">
-          <h2>Правила Monopoly</h2>
-          <p>Стандартные правила как в классической версии monopoly-one.</p>
-        </div>
-        <ol class="rules-list">
-          <li>Игроки по очереди бросают кубики и перемещают фишку по полю.</li>
-          <li>Если игрок попадает на свободную клетку собственности, он может ее купить.</li>
-          <li>Если клетка занята другим игроком, оплачивается аренда согласно уровню улучшений.</li>
-          <li>За полный набор цвета можно строить дома и отели, увеличивая доход.</li>
-          <li>Посадка в тюрьму происходит по стандартным правилам, выход — по дублям или оплате.</li>
-          <li>Побеждает игрок, оставшийся с наибольшим капиталом, когда остальные банкроты.</li>
-        </ol>
       </section>
 
       <section class="game-overlay" id="game-overlay" aria-hidden="true">
@@ -221,6 +339,11 @@
           <aside class="players-panel">
             <h3>Игроки</h3>
             <ul id="players-list"></ul>
+            <div class="player-actions">
+              <button class="primary" id="add-bot">Добавить бота</button>
+              <button class="ghost" id="open-trade">Торговать</button>
+              <button class="secondary" id="pay-bail">Оплатить залог</button>
+            </div>
             <div class="dice-panel">
               <div class="dice-row">
                 <div class="dice" data-die="1">4</div>
@@ -232,59 +355,15 @@
           </aside>
 
           <div class="board-wrapper">
-            <div class="board">
-              <div class="tile corner start" style="grid-row: 11; grid-column: 11;" data-index="0">Старт</div>
-              <div class="tile property color-band color-green edge-bottom brand-tile" style="grid-row: 11; grid-column: 10;" data-index="1" data-brand="casio" data-brand-text="CASIO">CASIO</div>
-              <div class="tile chance" style="grid-row: 11; grid-column: 9;" data-index="2">Руна</div>
-              <div class="tile property color-band color-green edge-bottom brand-tile" style="grid-row: 11; grid-column: 8;" data-index="3" data-brand="invicta">
-                <span class="tile-label tile-label--brand">
-                  <img class="brand-logo brand-invicta" src="invicta-logo.png" alt="">
-                </span>
-              </div>
-              <div class="tile tax" style="grid-row: 11; grid-column: 7;" data-index="4">Дань</div>
-              <div class="tile transport" style="grid-row: 11; grid-column: 6;" data-index="5">Портал</div>
-              <div class="tile property color-band color-blue edge-bottom brand-tile" style="grid-row: 11; grid-column: 5;" data-index="6" data-brand="zara" data-brand-text="ZARA">ZARA</div>
-              <div class="tile chance" style="grid-row: 11; grid-column: 4;" data-index="7">Руна</div>
-              <div class="tile property color-band color-blue edge-bottom brand-tile" style="grid-row: 11; grid-column: 3;" data-index="8" data-brand="hm" data-brand-text="H&amp;M">H&amp;M</div>
-              <div class="tile property color-band color-blue edge-bottom brand-tile" style="grid-row: 11; grid-column: 2;" data-index="9" data-brand="primark" data-brand-text="PRIMARK">PRIMARK</div>
-              <div class="tile corner jail" style="grid-row: 11; grid-column: 1;" data-index="10">Тюрьма</div>
-
-              <div class="tile property color-band color-orange edge-left brand-tile" style="grid-row: 10; grid-column: 1;" data-index="11" data-brand="remington" data-brand-text="REMINGTON">REMINGTON</div>
-              <div class="tile chance" style="grid-row: 9; grid-column: 1;" data-index="12">Руна</div>
-              <div class="tile property color-band color-orange edge-left brand-tile" style="grid-row: 8; grid-column: 1;" data-index="13" data-brand="philips" data-brand-text="PHILIPS">PHILIPS</div>
-              <div class="tile property color-band color-orange edge-left brand-tile" style="grid-row: 7; grid-column: 1;" data-index="14" data-brand="dyson" data-brand-text="DYSON">DYSON</div>
-              <div class="tile utility" style="grid-row: 6; grid-column: 1;" data-index="15">Аукцион</div>
-              <div class="tile property color-band color-purple edge-left brand-tile" style="grid-row: 5; grid-column: 1;" data-index="16" data-brand="marshall" data-brand-text="MARSHALL">MARSHALL</div>
-              <div class="tile chance" style="grid-row: 4; grid-column: 1;" data-index="17">Руна</div>
-              <div class="tile property color-band color-purple edge-left brand-tile" style="grid-row: 3; grid-column: 1;" data-index="18" data-brand="jbl" data-brand-text="JBL">JBL</div>
-              <div class="tile property color-band color-purple edge-left brand-tile" style="grid-row: 2; grid-column: 1;" data-index="19" data-brand="sony" data-brand-text="SONY">SONY</div>
-
-              <div class="tile corner go-jail" style="grid-row: 1; grid-column: 1;" data-index="20">В тюрьму</div>
-              <div class="tile property color-band color-teal edge-top" style="grid-row: 1; grid-column: 2;" data-index="21">Святилище Radiant</div>
-              <div class="tile chance" style="grid-row: 1; grid-column: 3;" data-index="22">Руна</div>
-              <div class="tile property color-band color-teal edge-top" style="grid-row: 1; grid-column: 4;" data-index="23">Роща</div>
-              <div class="tile property color-band color-teal edge-top" style="grid-row: 1; grid-column: 5;" data-index="24">Тёмный рынок</div>
-              <div class="tile tax" style="grid-row: 1; grid-column: 6;" data-index="25">Штраф</div>
-              <div class="tile property color-band color-pink edge-top" style="grid-row: 1; grid-column: 7;" data-index="26">Башня Dire</div>
-              <div class="tile chance" style="grid-row: 1; grid-column: 8;" data-index="27">Руна</div>
-              <div class="tile property color-band color-pink edge-top" style="grid-row: 1; grid-column: 9;" data-index="28">Казарма</div>
-              <div class="tile property color-band color-pink edge-top" style="grid-row: 1; grid-column: 10;" data-index="29">Форт</div>
-              <div class="tile corner free" style="grid-row: 1; grid-column: 11;" data-index="30">Привал</div>
-
-              <div class="tile property color-band color-yellow edge-right" style="grid-row: 2; grid-column: 11;" data-index="31">Святилище</div>
-              <div class="tile chance" style="grid-row: 3; grid-column: 11;" data-index="32">Руна</div>
-              <div class="tile property color-band color-yellow edge-right" style="grid-row: 4; grid-column: 11;" data-index="33">Арена</div>
-              <div class="tile property color-band color-yellow edge-right" style="grid-row: 5; grid-column: 11;" data-index="34">Крипта</div>
-              <div class="tile utility" style="grid-row: 6; grid-column: 11;" data-index="35">Фонтан</div>
-              <div class="tile chance" style="grid-row: 7; grid-column: 11;" data-index="36">Руна</div>
-              <div class="tile property color-band color-red edge-right" style="grid-row: 8; grid-column: 11;" data-index="37">Гробница</div>
-              <div class="tile transport" style="grid-row: 9; grid-column: 11;" data-index="38">Корабль</div>
-              <div class="tile property color-band color-red edge-right" style="grid-row: 10; grid-column: 11;" data-index="39">Обсерватория</div>
-
+            <div class="board" id="game-board">
               <div class="board-center">
                 <div class="center-card match-events">
                   <h4>События матча</h4>
                   <ul id="match-events"></ul>
+                </div>
+                <div class="center-card quick-chat">
+                  <h4>Быстрые фразы</h4>
+                  <div class="quick-chat-buttons" id="quick-chat"></div>
                 </div>
               </div>
             </div>
@@ -292,15 +371,12 @@
 
           <aside class="chat-panel">
             <h3>Чат</h3>
-            <div class="chat-messages">
-              <p><strong>ShadowBroker:</strong> Удачи всем!</p>
-              <p><strong>RadiantQueen:</strong> Кто первый доходит до башни — тот топ.</p>
-              <p><strong>DireOracle:</strong> Руна богатства в действии.</p>
-            </div>
+            <div class="chat-messages" id="chat-messages"></div>
             <div class="chat-input">
               <input type="text" id="chat-input" placeholder="Введите сообщение" />
               <button class="primary" id="send-chat">Отправить</button>
             </div>
+            <div class="emoji-row" id="emoji-row"></div>
           </aside>
         </div>
       </section>
@@ -357,6 +433,81 @@
             </label>
             <button class="primary" type="submit">Создать комнату</button>
           </form>
+        </div>
+      </section>
+
+      <section class="modal" id="property-modal" aria-hidden="true">
+        <div class="modal-card wide">
+          <div class="modal-header">
+            <div>
+              <h2 id="property-title">Собственность</h2>
+              <p id="property-subtitle">Карточка собственности</p>
+            </div>
+            <button class="ghost" id="close-property">Закрыть</button>
+          </div>
+          <div class="property-body">
+            <div class="property-preview">
+              <img id="property-logo" src="" alt="" />
+              <div class="property-meta">
+                <p><strong>Цена:</strong> <span id="property-price"></span></p>
+                <p><strong>Залог:</strong> <span id="property-mortgage"></span></p>
+                <p><strong>Выкуп:</strong> <span id="property-redeem"></span></p>
+                <p><strong>Филиал:</strong> <span id="property-house"></span></p>
+                <p><strong>Построено:</strong> <span id="property-houses"></span></p>
+                <p><strong>Текущая аренда:</strong> <span id="property-rent"></span></p>
+              </div>
+            </div>
+            <div class="property-actions">
+              <button class="primary" id="buy-property">Купить</button>
+              <button class="secondary" id="build-property">Построить филиал</button>
+              <button class="ghost" id="mortgage-property">Заложить</button>
+              <button class="ghost" id="redeem-property">Выкупить</button>
+              <button class="secondary" id="sell-property">Продать</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="modal" id="trade-modal" aria-hidden="true">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div>
+              <h2>Торговля</h2>
+              <p>Предложите обмен имущества или валюты.</p>
+            </div>
+            <button class="ghost" id="close-trade">Закрыть</button>
+          </div>
+          <form class="modal-form" id="trade-form">
+            <label>
+              <span>Партнёр</span>
+              <select id="trade-player"></select>
+            </label>
+            <label>
+              <span>Собственность партнёра</span>
+              <select id="trade-property"></select>
+            </label>
+            <label>
+              <span>Предложение (💰)</span>
+              <input type="number" id="trade-offer" min="0" step="50" value="150" />
+            </label>
+            <button class="primary" type="submit">Отправить предложение</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="modal" id="case-modal" aria-hidden="true">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div>
+              <h2>Открытие кейса</h2>
+              <p id="case-title">Rune Burst</p>
+            </div>
+            <button class="ghost" id="close-case">Закрыть</button>
+          </div>
+          <div class="case-opening">
+            <div class="case-animation" id="case-animation"></div>
+            <div class="case-reward" id="case-reward">Награда появится здесь</div>
+          </div>
         </div>
       </section>
     </main>
