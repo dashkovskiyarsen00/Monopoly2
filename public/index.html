@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Monopoly Dota Arena</title>
+  <title>Монополия Онлайн</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,8 +12,8 @@
       <div class="brand">
         <span class="logo">M</span>
         <div>
-          <h1>Monopoly Arena</h1>
-          <p>Dota 2 стиль · ELO-арена</p>
+          <h1>Монополия Онлайн</h1>
+          <p>Классическая настольная стратегия</p>
         </div>
       </div>
       <nav class="nav">
@@ -59,7 +59,7 @@
           <div class="card">
             <h3>Быстрое подключение</h3>
             <p>Автоподбор по рейтингу, матч готов за секунды.</p>
-            <button class="primary" id="quick-join" data-game-title="Матч: Быстрый поиск" data-game-mode="Автоматический подбор">Найти матч</button>
+            <button class="primary" id="quick-join" data-game-title="Классический матч" data-game-mode="Базовый режим">Найти матч</button>
           </div>
           <div class="card">
             <h3>Создать комнату</h3>
@@ -86,7 +86,6 @@
               <label>
                 <span>Предпочитаемая тема</span>
                 <select id="quick-theme">
-                  <option value="dota">Dota 2</option>
                   <option value="classic">Классическая</option>
                 </select>
               </label>
@@ -206,19 +205,19 @@
         </div>
         <div class="store-grid">
           <div class="store-card">
-            <h3>Кейс “Rune Burst”</h3>
+            <h3>Кейс “Classic Burst”</h3>
             <p>Шанс получить эпический эффект броска и легендарные кубики.</p>
-            <button class="primary open-case" data-case="Rune Burst" data-price="400">Открыть за 400</button>
+            <button class="primary open-case" data-case="Classic Burst" data-price="400">Открыть за 400</button>
           </div>
           <div class="store-card">
-            <h3>Кейс “Dire Echo”</h3>
+            <h3>Кейс “City Echo”</h3>
             <p>Редкие скины поля и фишек, дополнительный глоу.</p>
-            <button class="secondary open-case" data-case="Dire Echo" data-price="650">Открыть за 650</button>
+            <button class="secondary open-case" data-case="City Echo" data-price="650">Открыть за 650</button>
           </div>
           <div class="store-card">
-            <h3>Набор “Radiant Glory”</h3>
+            <h3>Набор “Golden Glory”</h3>
             <p>Фишки, кубики и поле в светлом стиле.</p>
-            <button class="ghost buy-button" data-item="Набор &quot;Radiant Glory&quot;">Купить за 1200</button>
+            <button class="ghost buy-button" data-item="Набор &quot;Golden Glory&quot;">Купить за 1200</button>
           </div>
         </div>
       </section>
@@ -262,7 +261,7 @@
 
       <section class="tab-panel" id="tab-rules">
         <div class="panel-header">
-          <h2>Правила Monopoly Arena</h2>
+          <h2>Правила Монополия Онлайн</h2>
           <p>Полный набор правил, торговли и событий.</p>
         </div>
         <ol class="rules-list" id="rules-list"></ol>
@@ -320,19 +319,13 @@
 
       <section class="game-overlay" id="game-overlay" aria-hidden="true">
         <div class="game-header">
+          <div class="game-status">
+            <h2 id="game-title">Монополия Онлайн</h2>
+            <span id="game-meta">Раунд 4 · Ход игрока: ShadowBroker</span>
+          </div>
           <div class="game-actions">
             <button class="ghost" id="exit-game">Выйти из игры</button>
             <button class="secondary" id="surrender-game">Сдаться</button>
-          </div>
-          <div class="game-title">
-            <span class="glow"></span>
-            <div class="game-title-text">
-              <h2 id="game-title">Матч: Dire Prime</h2>
-              <p class="game-subtitle" id="game-subtitle">Monopoly Arena · Режим: Dota 2 · Турнирная карта</p>
-            </div>
-          </div>
-          <div class="game-meta">
-            <span id="game-meta">Раунд 4 · Ход игрока: ShadowBroker</span>
           </div>
         </div>
         <div class="game-layout">
@@ -361,9 +354,9 @@
                   <h4>События матча</h4>
                   <ul id="match-events"></ul>
                 </div>
-                <div class="center-card quick-chat">
-                  <h4>Быстрые фразы</h4>
-                  <div class="quick-chat-buttons" id="quick-chat"></div>
+                <div class="center-card center-brand">
+                  <img src="center-field.png" alt="Монополия Онлайн" />
+                  <p>Классическая карта</p>
                 </div>
               </div>
             </div>
@@ -371,6 +364,10 @@
 
           <aside class="chat-panel">
             <h3>Чат</h3>
+            <div class="chat-toolbar">
+              <button class="ghost" id="quick-phrases-toggle" type="button">Быстрые фразы</button>
+              <div class="quick-phrases-menu" id="quick-phrases-menu" aria-hidden="true"></div>
+            </div>
             <div class="chat-messages" id="chat-messages"></div>
             <div class="chat-input">
               <input type="text" id="chat-input" placeholder="Введите сообщение" />
@@ -417,7 +414,6 @@
               <span>Тема поля</span>
               <select id="room-theme">
                 <option value="classic">Классическая</option>
-                <option value="dota">Dota</option>
               </select>
             </label>
             <label>
@@ -500,7 +496,7 @@
           <div class="modal-header">
             <div>
               <h2>Открытие кейса</h2>
-              <p id="case-title">Rune Burst</p>
+              <p id="case-title">Classic Burst</p>
             </div>
             <button class="ghost" id="close-case">Закрыть</button>
           </div>
@@ -516,7 +512,7 @@
   <section class="auth-overlay" id="auth-overlay" aria-hidden="true">
     <div class="auth-card">
       <div class="auth-header">
-        <h2>Добро пожаловать в Monopoly Arena</h2>
+        <h2>Добро пожаловать в Монополия Онлайн</h2>
         <p>Зарегистрируйтесь или войдите, чтобы создавать комнаты и искать соперников.</p>
       </div>
       <div class="auth-tabs">

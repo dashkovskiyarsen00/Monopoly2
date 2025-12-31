@@ -56,7 +56,9 @@ const registerName = document.getElementById('register-name');
 const registerEmail = document.getElementById('register-email');
 const registerPassword = document.getElementById('register-password');
 const boardElement = document.getElementById('game-board');
-const quickChatContainer = document.getElementById('quick-chat');
+const boardWrapper = document.querySelector('.board-wrapper');
+const quickPhrasesToggle = document.getElementById('quick-phrases-toggle');
+const quickPhrasesMenu = document.getElementById('quick-phrases-menu');
 const emojiRow = document.getElementById('emoji-row');
 const chatMessages = document.getElementById('chat-messages');
 const addBotButton = document.getElementById('add-bot');
@@ -115,7 +117,7 @@ let gameState = null;
 let activeProperty = null;
 let quickSearchInterval = null;
 
-const BOARD_THEME_CLASSES = ['theme-classic', 'theme-dota'];
+const BOARD_THEME_CLASSES = ['theme-classic'];
 
 const STORAGE_KEYS = {
   users: 'monopolyUsers',
@@ -180,8 +182,8 @@ const RULES = [
   'Попадание на чужую собственность требует оплаты аренды. Аренда увеличивается при постройке филиалов.',
   'Полный набор цвета даёт пассивный доход и удваивает аренду без филиалов.',
   'Филиалы строятся только при полном наборе цвета и равномерно по группе.',
-  'Тюрьма: игрок отправляется в тюрьму по соответствующей клетке или карте руны. Выход — дубль или оплата залога.',
-  'Шанс/руны запускают события: деньги, потери, перемещения, тюрьма, бонус за бренды, налог на имущество.',
+  'Тюрьма: игрок отправляется в тюрьму по соответствующей клетке или карте шанса. Выход — дубль или оплата залога.',
+  'Шанс запускает события: деньги, потери, перемещения, тюрьма, бонус за бренды, налог на имущество.',
   'Торговля доступна в любой момент: игроки могут обменивать собственность и валюту.',
   'Если игрок не может оплатить долг, он банкротится, а собственность возвращается банку.',
   'Матч завершается автоматически, когда остаётся один игрок с капиталом.',
@@ -213,79 +215,79 @@ const BRAND_LOGOS = {
 
 const BOARD_SLOTS = [
   { type: 'start', label: 'Старт' },
-  { type: 'property', group: 'green', brand: 'marshall', nameClassic: 'Marshall', nameDota: 'Сфера времени' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'green', brand: 'invicta', nameClassic: 'Invicta', nameDota: 'Часы битвы' },
-  { type: 'tax', label: 'Налог' },
-  { type: 'transport', label: 'Портал' },
-  { type: 'property', group: 'blue', brand: 'zara', nameClassic: 'Zara', nameDota: 'Зал теней' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'blue', brand: 'hm', nameClassic: 'H&M', nameDota: 'Площадь героев' },
-  { type: 'property', group: 'blue', brand: 'primark', nameClassic: 'Primark', nameDota: 'Кузня света' },
+  { type: 'property', group: 'green', brand: 'marshall', name: 'Marshall' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'green', brand: 'invicta', name: 'Invicta' },
+  { type: 'tax', label: 'Налог на доход' },
+  { type: 'transport', label: 'Вокзал Северный' },
+  { type: 'property', group: 'blue', brand: 'zara', name: 'Zara' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'blue', brand: 'hm', name: 'H&M' },
+  { type: 'property', group: 'blue', brand: 'primark', name: 'Primark' },
   { type: 'jail', label: 'Тюрьма' },
-  { type: 'property', group: 'orange', brand: 'remington', nameClassic: 'Remington', nameDota: 'Оружейная' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'orange', brand: 'philips', nameClassic: 'Philips', nameDota: 'Арканум' },
-  { type: 'property', group: 'orange', brand: 'dyson', nameClassic: 'Dyson', nameDota: 'Турбина маны' },
-  { type: 'utility', label: 'Аукцион' },
-  { type: 'property', group: 'purple', brand: 'marshall', nameClassic: 'Marshall', nameDota: 'Клан холла' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'purple', brand: 'jbl', nameClassic: 'JBL', nameDota: 'Храм звука' },
-  { type: 'property', group: 'purple', brand: 'sony', nameClassic: 'Sony', nameDota: 'Лаборатория' },
+  { type: 'property', group: 'orange', brand: 'remington', name: 'Remington' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'orange', brand: 'philips', name: 'Philips' },
+  { type: 'property', group: 'orange', brand: 'dyson', name: 'Dyson' },
+  { type: 'utility', label: 'Электростанция' },
+  { type: 'property', group: 'purple', brand: 'marshall', name: 'Marshall Plaza' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'purple', brand: 'jbl', name: 'JBL' },
+  { type: 'property', group: 'purple', brand: 'sony', name: 'Sony' },
   { type: 'gojail', label: 'В тюрьму' },
-  { type: 'property', group: 'teal', nameClassic: 'Святилище Radiant', nameDota: 'Святилище Radiant' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'teal', nameClassic: 'Роща', nameDota: 'Роща' },
-  { type: 'property', group: 'teal', nameClassic: 'Тёмный рынок', nameDota: 'Тёмный рынок' },
-  { type: 'tax', label: 'Штраф' },
-  { type: 'property', group: 'pink', nameClassic: 'Башня Dire', nameDota: 'Башня Dire' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'pink', nameClassic: 'Казарма', nameDota: 'Казарма' },
-  { type: 'property', group: 'pink', nameClassic: 'Форт', nameDota: 'Форт' },
-  { type: 'free', label: 'Привал' },
-  { type: 'property', group: 'yellow', nameClassic: 'Святилище', nameDota: 'Святилище' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'yellow', nameClassic: 'Арена', nameDota: 'Арена' },
-  { type: 'property', group: 'yellow', nameClassic: 'Крипта', nameDota: 'Крипта' },
-  { type: 'utility', label: 'Фонтан' },
-  { type: 'chance', label: 'Руна' },
-  { type: 'property', group: 'red', nameClassic: 'Гробница', nameDota: 'Гробница' },
-  { type: 'transport', label: 'Корабль' },
-  { type: 'property', group: 'red', nameClassic: 'Обсерватория', nameDota: 'Обсерватория' },
+  { type: 'property', group: 'teal', name: 'Парк Закатный' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'teal', name: 'Бульвар Центральный' },
+  { type: 'property', group: 'teal', name: 'Старый рынок' },
+  { type: 'tax', label: 'Налог на имущество' },
+  { type: 'property', group: 'pink', name: 'Галерея' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'pink', name: 'Музыкальный холл' },
+  { type: 'property', group: 'pink', name: 'Сити Плаза' },
+  { type: 'free', label: 'Стоянка' },
+  { type: 'property', group: 'yellow', name: 'Набережная' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'yellow', name: 'Арена' },
+  { type: 'property', group: 'yellow', name: 'Театр' },
+  { type: 'utility', label: 'Водоканал' },
+  { type: 'chance', label: 'Шанс' },
+  { type: 'property', group: 'red', name: 'Обсерватория' },
+  { type: 'transport', label: 'Вокзал Южный' },
+  { type: 'property', group: 'red', name: 'Променад' },
 ];
 
 const CHANCE_CARDS = [
   { label: 'Бонус за бренды', type: 'brandBonus', amount: 35 },
-  { label: 'Руна богатства', type: 'money', amount: 200 },
+  { label: 'Счастливый бонус', type: 'money', amount: 200 },
   { label: 'Налог на имущество', type: 'propertyTax', amount: 40 },
-  { label: 'Проклятие', type: 'money', amount: -150 },
-  { label: 'Телепорт на старт', type: 'moveTo', index: 0 },
+  { label: 'Штраф', type: 'money', amount: -150 },
+  { label: 'Вернуться на старт', type: 'moveTo', index: 0 },
   { label: 'Идти в тюрьму', type: 'goJail' },
   { label: 'Рывок вперёд', type: 'move', steps: 4 },
-  { label: 'Штраф героев', type: 'money', amount: -80 },
+  { label: 'Штраф за парковку', type: 'money', amount: -80 },
 ];
 
 const CASE_REWARDS = [
-  { name: 'Фишка: Storm Spirit', rarity: 'Редкий' },
-  { name: 'Скин поля: Radiant Bloom', rarity: 'Эпический' },
-  { name: 'Эффект броска: Arc Lightning', rarity: 'Легендарный' },
-  { name: 'Уникальные кубики: Void Edge', rarity: 'Редкий' },
-  { name: 'Эффект победы: Dark Rift', rarity: 'Эпический' },
-  { name: 'Фишка: Phantom', rarity: 'Обычный' },
+  { name: 'Фишка: Классик', rarity: 'Редкий' },
+  { name: 'Скин поля: Ночной город', rarity: 'Эпический' },
+  { name: 'Эффект броска: Неон', rarity: 'Легендарный' },
+  { name: 'Уникальные кубики: Графит', rarity: 'Редкий' },
+  { name: 'Эффект победы: Золотой блеск', rarity: 'Эпический' },
+  { name: 'Фишка: Лаки', rarity: 'Обычный' },
 ];
 
 const ACHIEVEMENTS = [
   { id: 'starter', title: 'Первый бросок', text: 'Сыграть первый матч.', reward: '50 опыта' },
   { id: 'collector', title: 'Коллекционер', text: 'Собрать полный цвет.', reward: '120 опыта' },
   { id: 'boss', title: 'Босс рынка', text: 'Победить в матче.', reward: '200 опыта' },
-  { id: 'lucky', title: 'Фортуна', text: 'Получить 3 положительных руны подряд.', reward: '80 опыта' },
+  { id: 'lucky', title: 'Фортуна', text: 'Получить 3 положительные карты шанса подряд.', reward: '80 опыта' },
 ];
 
 const DEFAULT_INVENTORY = [
   { name: 'Фишка: Страж Света', rarity: 'Эпический' },
-  { name: 'Кубики: Руна скорости', rarity: 'Редкий' },
-  { name: 'Эффект: Dark Rift', rarity: 'Легендарный' },
-  { name: 'Баннер: Dire Sigil', rarity: 'Обычный' },
+  { name: 'Кубики: Скоростные', rarity: 'Редкий' },
+  { name: 'Эффект: Золотой вихрь', rarity: 'Легендарный' },
+  { name: 'Баннер: Классик', rarity: 'Обычный' },
 ];
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -551,8 +553,8 @@ const renderClans = () => {
   const sample = state.clans.length
     ? state.clans
     : [
-        { name: 'Radiant Storm', members: 12, rating: 3200 },
-        { name: 'Dire Legends', members: 8, rating: 2850 },
+        { name: 'Silver Streets', members: 12, rating: 3200 },
+        { name: 'Golden Blocks', members: 8, rating: 2850 },
         { name: 'Neutral Core', members: 15, rating: 2600 },
       ];
   sample.forEach((clan) => {
@@ -613,30 +615,50 @@ const renderLeaderboard = () => {
   });
 };
 
-const setBoardTheme = (theme) => {
+const setBoardTheme = () => {
   if (!gameOverlay) {
     return;
   }
-  const normalized = theme === 'classic' ? 'classic' : 'dota';
   gameOverlay.classList.remove(...BOARD_THEME_CLASSES);
-  gameOverlay.classList.add(normalized === 'classic' ? 'theme-classic' : 'theme-dota');
-  renderBoard(normalized);
+  gameOverlay.classList.add('theme-classic');
+  renderBoard();
+};
+
+const updateBoardSize = () => {
+  if (!boardWrapper || !boardElement) {
+    return;
+  }
+  const { width, height } = boardWrapper.getBoundingClientRect();
+  const size = Math.max(260, Math.min(width, height));
+  boardElement.style.setProperty('--board-size', `${Math.floor(size)}px`);
 };
 
 const getTileCoordinates = (index) => {
-  if (index <= 10) {
-    return { row: 11, col: 11 - index };
+  if (index === 0) {
+    return { row: 12, col: 12, rowSpan: 2, colSpan: 2 };
   }
-  if (index <= 20) {
-    return { row: 11 - (index - 10), col: 1 };
+  if (index > 0 && index < 10) {
+    return { row: 12, col: 12 - index, rowSpan: 2, colSpan: 1 };
   }
-  if (index <= 30) {
-    return { row: 1, col: 1 + (index - 20) };
+  if (index === 10) {
+    return { row: 12, col: 1, rowSpan: 2, colSpan: 2 };
   }
-  return { row: 1 + (index - 30), col: 11 };
+  if (index > 10 && index < 20) {
+    return { row: 12 - (index - 10), col: 1, rowSpan: 1, colSpan: 2 };
+  }
+  if (index === 20) {
+    return { row: 1, col: 1, rowSpan: 2, colSpan: 2 };
+  }
+  if (index > 20 && index < 30) {
+    return { row: 1, col: index - 18, rowSpan: 2, colSpan: 1 };
+  }
+  if (index === 30) {
+    return { row: 1, col: 12, rowSpan: 2, colSpan: 2 };
+  }
+  return { row: index - 28, col: 12, rowSpan: 1, colSpan: 2 };
 };
 
-const buildBoardData = (theme) => {
+const buildBoardData = () => {
   const groupCounters = {};
   return BOARD_SLOTS.map((slot, index) => {
     if (slot.type === 'property') {
@@ -645,7 +667,7 @@ const buildBoardData = (theme) => {
       groupCounters[group] = count + 1;
       const config = GROUPS[group];
       const price = config.basePrice + count * 20;
-      const name = theme === 'classic' ? slot.nameClassic : slot.nameDota;
+      const name = slot.name;
       return {
         ...slot,
         index,
@@ -670,15 +692,15 @@ const clearBoardTiles = () => {
   tiles.forEach((tile) => tile.remove());
 };
 
-const renderBoard = (theme) => {
+const renderBoard = () => {
   if (!boardElement) {
     return;
   }
   if (!gameState) {
-    gameState = gameState || { board: buildBoardData(theme) };
+    gameState = gameState || { board: buildBoardData() };
   }
   const previous = gameState.board || [];
-  const refreshed = buildBoardData(theme);
+  const refreshed = buildBoardData();
   refreshed.forEach((tile, index) => {
     const oldTile = previous[index];
     if (oldTile && tile.type === 'property') {
@@ -693,15 +715,16 @@ const renderBoard = (theme) => {
     const tileEl = document.createElement('div');
     tileEl.className = `tile type-${tile.type}`;
     tileEl.dataset.index = String(tile.index);
-    const { row, col } = getTileCoordinates(tile.index);
-    tileEl.style.gridRow = row;
-    tileEl.style.gridColumn = col;
+    const { row, col, rowSpan, colSpan } = getTileCoordinates(tile.index);
+    tileEl.style.gridRow = rowSpan ? `${row} / span ${rowSpan}` : row;
+    tileEl.style.gridColumn = colSpan ? `${col} / span ${colSpan}` : col;
 
     if (tile.type === 'property') {
       tileEl.classList.add('property', `edge-${getEdgePosition(tile.index)}`);
       const colorStrip = document.createElement('span');
       colorStrip.className = `color-strip color-${tile.group}`;
-      tileEl.appendChild(colorStrip);
+      const content = document.createElement('div');
+      content.className = 'tile-content';
       const label = document.createElement('span');
       label.className = 'tile-label';
       label.textContent = tile.name;
@@ -712,7 +735,7 @@ const renderBoard = (theme) => {
         logo.src = logoData.src;
         logo.alt = logoData.alt;
       } else {
-        logo.src = theme === 'dota' ? 'center-field.png' : 'center-field.png';
+        logo.src = 'center-field.png';
         logo.alt = tile.name;
       }
       const price = document.createElement('span');
@@ -723,7 +746,8 @@ const renderBoard = (theme) => {
       houses.dataset.houses = '0';
       const tokens = document.createElement('div');
       tokens.className = 'tile-tokens';
-      tileEl.append(label, logo, price, houses, tokens);
+      content.append(label, logo, price, houses, tokens);
+      tileEl.append(colorStrip, content);
       tileEl.addEventListener('click', () => openPropertyModal(tile.index));
     } else if (['start', 'jail', 'gojail', 'free'].includes(tile.type)) {
       tileEl.classList.add('corner');
@@ -953,7 +977,7 @@ const buildPlayers = (room) => {
 };
 
 const initializeGame = (room) => {
-  const theme = room?.theme || 'dota';
+  const theme = 'classic';
   gameState = {
     players: buildPlayers(room),
     currentTurn: 0,
@@ -962,10 +986,10 @@ const initializeGame = (room) => {
     maxPlayers: room?.maxPlayers || 4,
     roomId: room?.id || null,
     theme,
-    board: buildBoardData(theme),
+    board: buildBoardData(),
     startedAt: Date.now(),
   };
-  renderBoard(theme);
+  renderBoard();
   updateTiles();
   renderPlayersList();
   updateGameMeta();
@@ -1202,7 +1226,7 @@ const finalizeGameIfNeeded = () => {
       date: new Date().toLocaleString('ru-RU'),
       winner: winner ? winner.name : 'Нет',
       mode: gameState.roomId ? 'Комната' : 'Быстрый',
-      theme: gameState.theme === 'classic' ? 'Классическая' : 'Dota 2',
+      theme: 'Классическая',
     });
     updateUserStats(winner);
     syncStorage();
@@ -1352,7 +1376,7 @@ const openGameOverlay = (context = {}) => {
   gameOverlay.classList.add('active');
   gameOverlay.setAttribute('aria-hidden', 'false');
   document.body.classList.add('game-active');
-  setBoardTheme(context.theme || context.room?.theme || gameState?.theme || 'dota');
+  setBoardTheme();
   if (context.title && gameTitle) {
     gameTitle.textContent = context.title;
   }
@@ -1374,6 +1398,7 @@ const openGameOverlay = (context = {}) => {
     addMatchEvent('Матч готов. Бросайте кубики.');
   }
   showNotification(context.notice || 'Матч открыт. Подготовка к игре.');
+  requestAnimationFrame(updateBoardSize);
 };
 
 const closeGameOverlay = () => {
@@ -1406,8 +1431,7 @@ const renderRooms = () => {
     const meta = document.createElement('span');
     title.textContent = room.name;
     const betLabel = room.bet > 0 ? `ставка ${room.bet}` : 'без ставки';
-    const themeLabel = room.theme === 'classic' ? 'классическая' : 'dota';
-    meta.textContent = `${room.players.length}/${room.maxPlayers} игроков · режим ${room.mode} · тема ${themeLabel} · ${betLabel} · ${room.privacy}`;
+    meta.textContent = `${room.players.length}/${room.maxPlayers} игроков · режим ${room.mode} · тема классическая · ${betLabel} · ${room.privacy}`;
     info.appendChild(title);
     info.appendChild(meta);
     const joinButton = document.createElement('button');
@@ -1535,7 +1559,7 @@ const handleRoomSubmit = (event) => {
   }
   const maxPlayers = Number(roomPlayersInput.value);
   const bet = Number(roomBetInput.value || 0);
-  const theme = roomThemeInput?.value === 'classic' ? 'classic' : 'dota';
+  const theme = 'classic';
   const room = {
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
     name,
@@ -1625,17 +1649,31 @@ const handleRegister = (event) => {
   showNotification(`Аккаунт создан. Добро пожаловать, ${newUser.name}!`);
 };
 
-const renderQuickChat = () => {
-  if (!quickChatContainer) {
+const closeQuickPhrasesMenu = () => {
+  if (!quickPhrasesMenu) {
     return;
   }
-  quickChatContainer.innerHTML = '';
+  quickPhrasesMenu.classList.remove('open');
+  quickPhrasesMenu.setAttribute('aria-hidden', 'true');
+};
+
+const renderQuickPhrases = () => {
+  if (!quickPhrasesMenu) {
+    return;
+  }
+  quickPhrasesMenu.innerHTML = '';
   QUICK_CHAT.forEach((line) => {
     const button = document.createElement('button');
     button.className = 'ghost';
     button.textContent = line;
-    button.addEventListener('click', () => sendChatMessage(line));
-    quickChatContainer.appendChild(button);
+    button.addEventListener('click', () => {
+      if (chatInput) {
+        chatInput.value = line;
+        chatInput.focus();
+      }
+      closeQuickPhrasesMenu();
+    });
+    quickPhrasesMenu.appendChild(button);
   });
 };
 
@@ -1936,7 +1974,7 @@ const handleQuickSearchStart = () => {
         privacy: 'Открытая',
       };
       openGameOverlay({
-        title: 'Матч: Быстрый поиск',
+        title: 'Классический матч',
         mode: `Режим: ${room.mode} · Автоподбор`,
         room,
         events: ['Матч найден. Игроки подключаются...'],
@@ -2119,6 +2157,32 @@ if (chatInput) {
   });
 }
 
+if (quickPhrasesToggle) {
+  quickPhrasesToggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (!quickPhrasesMenu) {
+      return;
+    }
+    const isOpen = quickPhrasesMenu.classList.contains('open');
+    if (isOpen) {
+      closeQuickPhrasesMenu();
+    } else {
+      quickPhrasesMenu.classList.add('open');
+      quickPhrasesMenu.setAttribute('aria-hidden', 'false');
+    }
+  });
+}
+
+document.addEventListener('click', (event) => {
+  if (!quickPhrasesMenu || !quickPhrasesToggle) {
+    return;
+  }
+  if (quickPhrasesMenu.contains(event.target) || quickPhrasesToggle.contains(event.target)) {
+    return;
+  }
+  closeQuickPhrasesMenu();
+});
+
 if (closeRoomModalButton) {
   closeRoomModalButton.addEventListener('click', closeRoomModal);
 }
@@ -2211,6 +2275,8 @@ if (registerForm) {
   registerForm.addEventListener('submit', handleRegister);
 }
 
+window.addEventListener('resize', updateBoardSize);
+
 ensureDefaultInventory();
 ensureAchievements();
 renderInventory();
@@ -2221,7 +2287,7 @@ renderClans();
 renderLeaderboard();
 renderMatchHistory();
 updateGlobalStats();
-renderQuickChat();
+renderQuickPhrases();
 renderEmoji();
 updateOnlineCount();
 updateProfile();
